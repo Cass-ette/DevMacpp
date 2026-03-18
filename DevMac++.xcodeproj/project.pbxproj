@@ -21,12 +21,14 @@
 		EF35BBA239841B99742ECE75 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2540EFF979D40D6197C52F3C /* Enums.swift */; };
 		F3F313FFB2D8AD105C6E2617 /* ResizableDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6529CEF1A908C08BAA4FF2ED /* ResizableDivider.swift */; };
 		FE2C88C1B979BDDCCBEF9F1A /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5308733BBD9D23E41CEAB5 /* SidebarView.swift */; };
+		D2F8A1B3C4E5D6789012F3A4B /* CompilerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2B1C3D5E6F7890123A4B5C /* CompilerOptions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0826360DE8DB7993E5C1667D /* MonacoEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonacoEditorView.swift; sourceTree = "<group>"; };
 		1D34E3BDC2AC6B697BC7D3BB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2540EFF979D40D6197C52F3C /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		F4A2B1C3D5E6F7890123A4B5C /* CompilerOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerOptions.swift; sourceTree = "<group>"; };
 		25C61248FFE8877D3BFE1706 /* BottomPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomPanelView.swift; sourceTree = "<group>"; };
 		3030BE6833506E5AB445BF2C /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		6529CEF1A908C08BAA4FF2ED /* ResizableDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableDivider.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				2540EFF979D40D6197C52F3C /* Enums.swift */,
+				F4A2B1C3D5E6F7890123A4B5C /* CompilerOptions.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 				3B40BED256EC5A5B9DDAE503 /* StatusBarView.swift in Sources */,
 				2C717679AF41951A2F1B0E1C /* ToolbarView.swift in Sources */,
 				C3D4E5F678901234ABCDEF12 /* FileService.swift in Sources */,
+				D2F8A1B3C4E5D6789012F3A4B /* CompilerOptions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
