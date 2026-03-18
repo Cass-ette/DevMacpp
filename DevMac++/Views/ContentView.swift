@@ -25,7 +25,7 @@ struct ContentView: View {
                 VStack(spacing: 0) {
                     FileTabBarView()
                     Divider().background(Color(hex: "#3e3e42"))
-                    EditorPlaceholderView()
+                    MonacoEditorView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

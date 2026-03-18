@@ -9,30 +9,34 @@
 /* Begin PBXBuildFile section */
 		1D883500BED7B18D6EC0C03C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67440025F07D851CD9374054 /* AppState.swift */; };
 		21CCF9A06B9A0E7BEE6C5834 /* DevMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820B440E31BE25BFF817DBD3 /* DevMacApp.swift */; };
-		94879AD508C6F9075A095CD1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61F78C5B3BF6127AB180DE8 /* ContentView.swift */; };
+		2C717679AF41951A2F1B0E1C /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3030BE6833506E5AB445BF2C /* ToolbarView.swift */; };
+		3B40BED256EC5A5B9DDAE503 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911B142F8BCB8DDF971BCF6A /* StatusBarView.swift */; };
+		43C0E901C828D8A62AC7AEC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D34E3BDC2AC6B697BC7D3BB /* ContentView.swift */; };
+		71B47D541962FDAEE5943DE5 /* editor.html in Resources */ = {isa = PBXBuildFile; fileRef = DDD2CDE7C80390ABB49CE337 /* editor.html */; };
+		78D3CCCBDD48C6B23FE19054 /* MonacoEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0826360DE8DB7993E5C1667D /* MonacoEditorView.swift */; };
+		ACCDD3312BD2036106270F73 /* FileTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7EDD4FF1FEB0BB44CE14C6B /* FileTabBarView.swift */; };
+		C1FB321E6367C4EE001BF353 /* BottomPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C61248FFE8877D3BFE1706 /* BottomPanelView.swift */; };
+		C682672274DBB906E8542531 /* AppMenuCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E012C58ADA008D65B932FE7F /* AppMenuCommands.swift */; };
 		EF35BBA239841B99742ECE75 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2540EFF979D40D6197C52F3C /* Enums.swift */; };
-		TOOLBARBUILD001 /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TOOLBARREF001 /* ToolbarView.swift */; };
-		SIDEBARBUILD001 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SIDEBARREF001 /* SidebarView.swift */; };
-		BOTTOMPANELBUILD001 /* BottomPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BOTTOMPANELREF001 /* BottomPanelView.swift */; };
-		STATUSBARBUILD001 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STATUSBARREF001 /* StatusBarView.swift */; };
-		APPMENUBUILD001 /* AppMenuCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = APPMENUREF001 /* AppMenuCommands.swift */; };
-		FILETABBARBUILD001 /* FileTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FILETABBARREF001 /* FileTabBarView.swift */; };
-		RESIZABLEDIVIDERBUILD001 /* ResizableDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = RESIZABLEDIVIDERREF001 /* ResizableDivider.swift */; };
+		F3F313FFB2D8AD105C6E2617 /* ResizableDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6529CEF1A908C08BAA4FF2ED /* ResizableDivider.swift */; };
+		FE2C88C1B979BDDCCBEF9F1A /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5308733BBD9D23E41CEAB5 /* SidebarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0826360DE8DB7993E5C1667D /* MonacoEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonacoEditorView.swift; sourceTree = "<group>"; };
+		1D34E3BDC2AC6B697BC7D3BB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2540EFF979D40D6197C52F3C /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		25C61248FFE8877D3BFE1706 /* BottomPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomPanelView.swift; sourceTree = "<group>"; };
+		3030BE6833506E5AB445BF2C /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
+		6529CEF1A908C08BAA4FF2ED /* ResizableDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableDivider.swift; sourceTree = "<group>"; };
 		67440025F07D851CD9374054 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		820B440E31BE25BFF817DBD3 /* DevMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMacApp.swift; sourceTree = "<group>"; };
+		911B142F8BCB8DDF971BCF6A /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
 		BC4FF9BC6DF965ECDB29C9EE /* DevMac++.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DevMac++.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C61F78C5B3BF6127AB180DE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		TOOLBARREF001 /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
-		SIDEBARREF001 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
-		BOTTOMPANELREF001 /* BottomPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomPanelView.swift; sourceTree = "<group>"; };
-		STATUSBARREF001 /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
-		APPMENUREF001 /* AppMenuCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMenuCommands.swift; sourceTree = "<group>"; };
-		FILETABBARREF001 /* FileTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTabBarView.swift; sourceTree = "<group>"; };
-		RESIZABLEDIVIDERREF001 /* ResizableDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableDivider.swift; sourceTree = "<group>"; };
+		CE5308733BBD9D23E41CEAB5 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		D7EDD4FF1FEB0BB44CE14C6B /* FileTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTabBarView.swift; sourceTree = "<group>"; };
+		DDD2CDE7C80390ABB49CE337 /* editor.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = editor.html; sourceTree = "<group>"; };
+		E012C58ADA008D65B932FE7F /* AppMenuCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMenuCommands.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -41,9 +45,26 @@
 			children = (
 				56DAE17ED0D5081EFFCF35B5 /* App */,
 				C4048C2D386D16FE696C90D6 /* Models */,
-				AABB11223344556677889900 /* Views */,
+				883D3BAD3AD91E8C7393D4D2 /* Resources */,
+				278B092F3D7841CCAFB5C527 /* Views */,
 			);
 			path = "DevMac++";
+			sourceTree = "<group>";
+		};
+		278B092F3D7841CCAFB5C527 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E012C58ADA008D65B932FE7F /* AppMenuCommands.swift */,
+				25C61248FFE8877D3BFE1706 /* BottomPanelView.swift */,
+				1D34E3BDC2AC6B697BC7D3BB /* ContentView.swift */,
+				D7EDD4FF1FEB0BB44CE14C6B /* FileTabBarView.swift */,
+				0826360DE8DB7993E5C1667D /* MonacoEditorView.swift */,
+				6529CEF1A908C08BAA4FF2ED /* ResizableDivider.swift */,
+				CE5308733BBD9D23E41CEAB5 /* SidebarView.swift */,
+				911B142F8BCB8DDF971BCF6A /* StatusBarView.swift */,
+				3030BE6833506E5AB445BF2C /* ToolbarView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		37D9DEF6B35D109761CC09D9 /* Products */ = {
@@ -71,27 +92,28 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		883D3BAD3AD91E8C7393D4D2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A7FB3D847FD7196F367791C7 /* monaco */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A7FB3D847FD7196F367791C7 /* monaco */ = {
+			isa = PBXGroup;
+			children = (
+				DDD2CDE7C80390ABB49CE337 /* editor.html */,
+			);
+			path = monaco;
+			sourceTree = "<group>";
+		};
 		C4048C2D386D16FE696C90D6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				2540EFF979D40D6197C52F3C /* Enums.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		AABB11223344556677889900 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				C61F78C5B3BF6127AB180DE8 /* ContentView.swift */,
-				TOOLBARREF001 /* ToolbarView.swift */,
-				SIDEBARREF001 /* SidebarView.swift */,
-				BOTTOMPANELREF001 /* BottomPanelView.swift */,
-				STATUSBARREF001 /* StatusBarView.swift */,
-				APPMENUREF001 /* AppMenuCommands.swift */,
-				FILETABBARREF001 /* FileTabBarView.swift */,
-				RESIZABLEDIVIDERREF001 /* ResizableDivider.swift */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,6 +124,7 @@
 			buildConfigurationList = 02ACB166176CC6748D3E400F /* Build configuration list for PBXNativeTarget "DevMac++" */;
 			buildPhases = (
 				5E9FBC09AB2008C8340C8AA9 /* Sources */,
+				63B6979391FF1007D3C638EB /* Resources */,
 			);
 			buildRules = (
 			);
@@ -148,22 +171,34 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		63B6979391FF1007D3C638EB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71B47D541962FDAEE5943DE5 /* editor.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5E9FBC09AB2008C8340C8AA9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C682672274DBB906E8542531 /* AppMenuCommands.swift in Sources */,
 				1D883500BED7B18D6EC0C03C /* AppState.swift in Sources */,
-				94879AD508C6F9075A095CD1 /* ContentView.swift in Sources */,
+				C1FB321E6367C4EE001BF353 /* BottomPanelView.swift in Sources */,
+				43C0E901C828D8A62AC7AEC0 /* ContentView.swift in Sources */,
 				21CCF9A06B9A0E7BEE6C5834 /* DevMacApp.swift in Sources */,
 				EF35BBA239841B99742ECE75 /* Enums.swift in Sources */,
-				TOOLBARBUILD001 /* ToolbarView.swift in Sources */,
-				SIDEBARBUILD001 /* SidebarView.swift in Sources */,
-				BOTTOMPANELBUILD001 /* BottomPanelView.swift in Sources */,
-				STATUSBARBUILD001 /* StatusBarView.swift in Sources */,
-				APPMENUBUILD001 /* AppMenuCommands.swift in Sources */,
-				FILETABBARBUILD001 /* FileTabBarView.swift in Sources */,
-				RESIZABLEDIVIDERBUILD001 /* ResizableDivider.swift in Sources */,
+				ACCDD3312BD2036106270F73 /* FileTabBarView.swift in Sources */,
+				78D3CCCBDD48C6B23FE19054 /* MonacoEditorView.swift in Sources */,
+				F3F313FFB2D8AD105C6E2617 /* ResizableDivider.swift in Sources */,
+				FE2C88C1B979BDDCCBEF9F1A /* SidebarView.swift in Sources */,
+				3B40BED256EC5A5B9DDAE503 /* StatusBarView.swift in Sources */,
+				2C717679AF41951A2F1B0E1C /* ToolbarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

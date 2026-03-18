@@ -21,6 +21,10 @@ targets:
     platform: macOS
     sources:
       - DevMac++
+    resources:
+      - path: DevMac++
+        excludes:
+          - "**/.gitkeep"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.devmacpp.app

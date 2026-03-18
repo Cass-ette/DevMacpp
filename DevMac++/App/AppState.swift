@@ -16,6 +16,7 @@ class AppState: ObservableObject {
     @Published var isModified: Bool = false
     @Published var fileSize: Int = 0
     @Published var insertMode: InsertMode = .insert
+    @Published var editorReady: Bool = false
 
     // 编译状态
     @Published var isCompiling: Bool = false
