@@ -20,11 +20,15 @@ targets:
     type: application
     platform: macOS
     sources:
-      - DevMac++
-    resources:
       - path: DevMac++
         excludes:
-          - "**/.gitkeep"
+          - "Resources/**"
+          - "monaco-editor/**"
+      - path: DevMac++/monaco-editor
+        buildPhase: resources
+        type: folder
+      - path: DevMac++/Resources/help
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.devmacpp.app

@@ -26,7 +26,7 @@ struct ContentView: View {
                     FileTabBarView()
                     Divider().background(Color(hex: "#3e3e42"))
                     MonacoEditorView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }

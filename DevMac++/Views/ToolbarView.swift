@@ -5,6 +5,7 @@ struct ToolbarView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var compilerService: CompilerService
     @EnvironmentObject var debuggerService: DebuggerService
+    @EnvironmentObject var fileService: FileService
     @EnvironmentObject var templateService: TemplateService
     @State private var showTemplatePicker = false
 
@@ -15,9 +16,15 @@ struct ToolbarView: View {
                 ToolbarButton(icon: "doc", tooltip: "新建 (Cmd+N)") {
                     showTemplatePicker = true
                 }
-                ToolbarButton(icon: "folder", tooltip: "打开 (Cmd+O)") {}
-                ToolbarButton(icon: "square.and.arrow.down", tooltip: "保存 (Cmd+S)") {}
-                ToolbarButton(icon: "square.and.arrow.down.on.square", tooltip: "另存为 (Cmd+Shift+S)") {}
+                ToolbarButton(icon: "folder", tooltip: "打开 (Cmd+O)") {
+                    fileService.openFile(appState: appState)
+                }
+                ToolbarButton(icon: "square.and.arrow.down", tooltip: "保存 (Cmd+S)") {
+                    fileService.saveFile(appState: appState)
+                }
+                ToolbarButton(icon: "square.and.arrow.down.on.square", tooltip: "另存为") {
+                    fileService.saveAs(appState: appState)
+                }
                 ToolbarButton(icon: "xmark", tooltip: "关闭 (Cmd+W)") {}
 
                 ToolbarDivider()
@@ -52,20 +59,37 @@ struct ToolbarView: View {
             HStack(spacing: 2) {
                 ToolbarButton(icon: "hammer", tooltip: "编译 (Cmd+F11)") {
                     Task { @MainActor in
+                        if appState.currentFilePath == nil {
+                            fileService.saveFile(appState: appState)
+                            if appState.currentFilePath == nil { return }
+                        }
                         if let path = appState.currentFilePath {
+                            appState.compileLog = "正在编译...\n"
+                            appState.selectedBottomTab = .compileLog
                             let result = try? await compilerService.compileOnly(filePath: path)
                             appState.compileSuccess = result?.success ?? false
                             appState.compileErrors = result?.errors ?? []
-                            appState.selectedBottomTab = .compileLog
+                            appState.compileLog = result?.output ?? ""
                         }
                     }
                 }
                 ToolbarButton(icon: "play", tooltip: "运行 (Cmd+F10)", tint: Color(hex: "#4caf50")) {
                     Task { @MainActor in
+                        if appState.currentFilePath == nil {
+                            fileService.saveFile(appState: appState)
+                            if appState.currentFilePath == nil { return }
+                        }
                         if let path = appState.currentFilePath {
+                            appState.compileLog = "正在编译...\n"
+                            appState.selectedBottomTab = .compileLog
                             let result = try? await compilerService.compileOnly(filePath: path)
                             if result?.success == true, let exePath = result?.executablePath {
+                                appState.compileLog = (result?.output ?? "") + "\n运行中...\n"
                                 await runExecutable(path: exePath)
+                            } else {
+                                appState.compileSuccess = false
+                                appState.compileErrors = result?.errors ?? []
+                                appState.compileLog = result?.output ?? ""
                             }
                         }
                     }
@@ -110,31 +134,47 @@ struct ToolbarView: View {
 
     @MainActor
     private func compileAndRun() async {
+        if appState.currentFilePath == nil {
+            fileService.saveFile(appState: appState)
+            if appState.currentFilePath == nil { return }
+        }
+
         guard let path = appState.currentFilePath else { return }
 
         do {
+            appState.compileLog = "正在编译...\n"
+            appState.selectedBottomTab = .compileLog
             let result = try await compilerService.compileOnly(filePath: path)
             appState.compileLog = result.output
             appState.compileSuccess = result.success
             appState.compileErrors = result.errors
-            appState.selectedBottomTab = .compileLog
 
             if result.success, let exePath = result.executablePath {
+                appState.compileLog = (result.output) + "\n运行中...\n"
                 await runExecutable(path: exePath)
             }
         } catch {
-            appState.compileOutput = "Error: \(error.localizedDescription)"
+            appState.compileLog = "Error: \(error.localizedDescription)"
+            appState.selectedBottomTab = .compileLog
         }
     }
 
     @MainActor
     private func startDebug() async {
+        if appState.currentFilePath == nil {
+            fileService.saveFile(appState: appState)
+            if appState.currentFilePath == nil { return }
+        }
+
         guard let path = appState.currentFilePath else { return }
 
         do {
+            appState.compileLog = "正在编译（调试模式）...\n"
+            appState.selectedBottomTab = .compileLog
             let result = try await compilerService.compileForDebug(filePath: path)
             appState.compileLog = result.output
-            appState.selectedBottomTab = .compileLog
+            appState.compileSuccess = result.success
+            appState.compileErrors = result.errors
 
             if result.success, let exePath = result.executablePath {
                 try await debuggerService.startDebug(
@@ -146,8 +186,8 @@ struct ToolbarView: View {
                 appState.selectedBottomTab = .debug
             }
         } catch {
-            appState.compileOutput = "Debug error: \(error.localizedDescription)"
-            appState.selectedBottomTab = .compileResult
+            appState.compileLog = "调试错误: \(error.localizedDescription)"
+            appState.selectedBottomTab = .compileLog
         }
     }
 

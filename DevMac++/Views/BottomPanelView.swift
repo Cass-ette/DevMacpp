@@ -2,6 +2,7 @@ import SwiftUI
 
 struct BottomPanelView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var debuggerService: DebuggerService
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,8 +23,8 @@ struct BottomPanelView: View {
             Divider().background(Color(hex: "#3e3e42"))
 
             // 内容区
-            ScrollView {
-                HStack {
+            ScrollViewReader { proxy in
+                ScrollView {
                     VStack(alignment: .leading, spacing: 2) {
                         switch appState.selectedBottomTab {
                         case .compileLog:
@@ -31,6 +32,7 @@ struct BottomPanelView: View {
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(Color(hex: "#cccccc"))
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                                .id("compileLog")
                         case .compileResult:
                             VStack(alignment: .leading, spacing: 2) {
                                 if appState.compileSuccess {
@@ -52,10 +54,12 @@ struct BottomPanelView: View {
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                         case .debug:
-                            Text("调试输出将显示在这里")
+                            Text(debuggerService.debugOutput.isEmpty ? "调试输出将显示在这里" : debuggerService.debugOutput)
                                 .font(.system(size: 11, design: .monospaced))
-                                .foregroundColor(Color(hex: "#858585"))
+                                .foregroundColor(debuggerService.debugOutput.isEmpty ? Color(hex: "#858585") : Color(hex: "#cccccc"))
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                                .textSelection(.enabled)
+                                .id("debugOutput")
                         case .findResults:
                             Text("查找结果将显示在这里")
                                 .font(.system(size: 11, design: .monospaced))
@@ -63,12 +67,17 @@ struct BottomPanelView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
-                    Spacer()
+                    .padding(8)
                 }
-                .padding(8)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(hex: "#252526"))
+                .onChange(of: debuggerService.debugOutput) { _ in
+                    withAnimation { proxy.scrollTo("debugOutput", anchor: .bottom) }
+                }
+                .onChange(of: appState.compileLog) { _ in
+                    withAnimation { proxy.scrollTo("compileLog", anchor: .bottom) }
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(hex: "#252526"))
         }
     }
 }

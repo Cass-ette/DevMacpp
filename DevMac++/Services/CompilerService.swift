@@ -7,12 +7,19 @@ class CompilerService: ObservableObject {
 
     // GCC 路径
     var gccPath: String {
-        if FileManager.default.fileExists(atPath: "/opt/homebrew/bin/g++-13") {
-            return "/opt/homebrew/bin/g++-13"
-        } else if FileManager.default.fileExists(atPath: "/opt/homebrew/bin/g++") {
-            return "/opt/homebrew/bin/g++"
+        let fm = FileManager.default
+        let brewBin = "/opt/homebrew/bin"
+
+        // 优先使用 Homebrew 的 g++ 版本
+        if fm.fileExists(atPath: "\(brewBin)/g++-14") {
+            return "\(brewBin)/g++-14"
+        } else if fm.fileExists(atPath: "\(brewBin)/g++-13") {
+            return "\(brewBin)/g++-13"
+        } else if fm.fileExists(atPath: "\(brewBin)/g++") {
+            return "\(brewBin)/g++"
         }
-        return "g++"
+        // 回退到系统 clang 的 g++
+        return "/usr/bin/g++"
     }
 
     var gdbPath: String {
@@ -34,25 +41,23 @@ class CompilerService: ObservableObject {
         }
         args.append(contentsOf: ["-o", outputPath, filePath])
 
-        compileLog = "Compiling \(filePath)...\n"
-        compileLog += "Compiler: \(gccPath)\n"
-        compileLog += "Command: g++ \(args.joined(separator: " "))\n\n"
+        let header = "=== 编译信息 ===\n编译器: \(gccPath)\n命令: \(gccPath) \(args.joined(separator: " "))\n\n=== 编译输出 ===\n"
 
         let result = try await runProcess(executable: gccPath, arguments: args)
-        compileLog += result.output
 
         let errors = parseErrors(result.output, filePath: filePath)
         let success = result.returnCode == 0
 
+        compileLog = header + result.output + "\n"
         if success {
-            compileLog += "\nCompilation successful."
+            compileLog += "\n✅ 编译成功！"
         } else {
-            compileLog += "\nCompilation failed."
+            compileLog += "\n❌ 编译失败。"
         }
 
         let compileResult = CompileResult(
             success: success,
-            output: result.output,
+            output: compileLog,
             errors: errors,
             executablePath: success ? outputPath : nil
         )
