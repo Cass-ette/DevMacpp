@@ -12,6 +12,6 @@ struct DevMacApp: App {
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified)
-        // AppMenuCommands 在 Task 7 添加
+        .commands { AppMenuCommands(appState: appState) }
     }
 }

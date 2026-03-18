@@ -15,6 +15,9 @@
 		SIDEBARBUILD001 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SIDEBARREF001 /* SidebarView.swift */; };
 		BOTTOMPANELBUILD001 /* BottomPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BOTTOMPANELREF001 /* BottomPanelView.swift */; };
 		STATUSBARBUILD001 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STATUSBARREF001 /* StatusBarView.swift */; };
+		APPMENUBUILD001 /* AppMenuCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = APPMENUREF001 /* AppMenuCommands.swift */; };
+		FILETABBARBUILD001 /* FileTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FILETABBARREF001 /* FileTabBarView.swift */; };
+		RESIZABLEDIVIDERBUILD001 /* ResizableDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = RESIZABLEDIVIDERREF001 /* ResizableDivider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +30,9 @@
 		SIDEBARREF001 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		BOTTOMPANELREF001 /* BottomPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomPanelView.swift; sourceTree = "<group>"; };
 		STATUSBARREF001 /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
+		APPMENUREF001 /* AppMenuCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMenuCommands.swift; sourceTree = "<group>"; };
+		FILETABBARREF001 /* FileTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTabBarView.swift; sourceTree = "<group>"; };
+		RESIZABLEDIVIDERREF001 /* ResizableDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableDivider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -81,6 +87,9 @@
 				SIDEBARREF001 /* SidebarView.swift */,
 				BOTTOMPANELREF001 /* BottomPanelView.swift */,
 				STATUSBARREF001 /* StatusBarView.swift */,
+				APPMENUREF001 /* AppMenuCommands.swift */,
+				FILETABBARREF001 /* FileTabBarView.swift */,
+				RESIZABLEDIVIDERREF001 /* ResizableDivider.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -152,6 +161,9 @@
 				SIDEBARBUILD001 /* SidebarView.swift in Sources */,
 				BOTTOMPANELBUILD001 /* BottomPanelView.swift in Sources */,
 				STATUSBARBUILD001 /* StatusBarView.swift in Sources */,
+				APPMENUBUILD001 /* AppMenuCommands.swift in Sources */,
+				FILETABBARBUILD001 /* FileTabBarView.swift in Sources */,
+				RESIZABLEDIVIDERBUILD001 /* ResizableDivider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -5,37 +5,45 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // 工具栏
             ToolbarView()
                 .background(.ultraThinMaterial)
 
-            Divider()
-                .background(Color(hex: "#3e3e42"))
+            Divider().background(Color(hex: "#3e3e42"))
 
-            // 主内容区（侧边栏 + 编辑器）
-            HSplitView {
+            // 主内容区
+            HStack(spacing: 0) {
                 SidebarView()
-                    .frame(minWidth: 150, idealWidth: appState.sidebarWidth, maxWidth: 400)
-                    .background(Color(hex: "#252526"))
+                    .frame(width: appState.sidebarWidth)
+                    .background(.ultraThinMaterial)
 
-                // 编辑器占位（Plan 2 实现）
-                EditorPlaceholderView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                VerticalResizableDivider(
+                    width: $appState.sidebarWidth,
+                    minWidth: 150,
+                    maxWidth: 400
+                )
+
+                VStack(spacing: 0) {
+                    FileTabBarView()
+                    Divider().background(Color(hex: "#3e3e42"))
+                    EditorPlaceholderView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            Divider()
-                .background(Color(hex: "#3e3e42"))
+            HorizontalResizableDivider(
+                height: $appState.bottomPanelHeight,
+                minHeight: 80,
+                maxHeight: 400
+            )
 
-            // 底部面板
             BottomPanelView()
                 .frame(height: appState.bottomPanelHeight)
                 .background(.ultraThinMaterial)
 
-            Divider()
-                .background(Color(hex: "#3e3e42"))
+            Divider().background(Color(hex: "#3e3e42"))
 
-            // 状态栏
             StatusBarView()
                 .background(.ultraThinMaterial)
         }

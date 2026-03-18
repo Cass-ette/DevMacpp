@@ -1,0 +1,72 @@
+import SwiftUI
+
+struct AppMenuCommands: Commands {
+    let appState: AppState
+
+    var body: some Commands {
+        // 文件菜单
+        CommandMenu("文件") {
+            Button("新建") {}
+                .keyboardShortcut("n", modifiers: .command)
+            Button("打开...") {}
+                .keyboardShortcut("o", modifiers: .command)
+            Divider()
+            Button("保存") {}
+                .keyboardShortcut("s", modifiers: .command)
+            Button("另存为...") {}
+                .keyboardShortcut("s", modifiers: [.command, .shift])
+            Divider()
+            Button("关闭") {}
+                .keyboardShortcut("w", modifiers: .command)
+        }
+
+        // 编辑菜单（替换默认）
+        CommandGroup(replacing: .undoRedo) {
+            Button("撤销") {}
+                .keyboardShortcut("z", modifiers: .command)
+            Button("重做") {}
+                .keyboardShortcut("z", modifiers: [.command, .shift])
+        }
+
+        // 搜索菜单
+        CommandMenu("搜索") {
+            Button("查找...") {}
+                .keyboardShortcut("f", modifiers: .command)
+            Button("替换...") {}
+                .keyboardShortcut("h", modifiers: .command)
+            Button("跳转到行...") {}
+                .keyboardShortcut("g", modifiers: .command)
+        }
+
+        // 执行菜单
+        CommandMenu("执行") {
+            Button("编译") {}
+                .keyboardShortcut(KeyEquivalent(Character("\u{F70B}")), modifiers: .command)
+            Button("运行") {}
+                .keyboardShortcut(KeyEquivalent(Character("\u{F70A}")), modifiers: .command)
+            Button("编译运行") {}
+                .keyboardShortcut(KeyEquivalent(Character("\u{F709}")), modifiers: .command)
+            Divider()
+            Button("调试") {}
+                .keyboardShortcut(KeyEquivalent(Character("\u{F708}")), modifiers: .command)
+            Button("停止调试") {}
+                .keyboardShortcut(KeyEquivalent(Character("\u{F702}")), modifiers: .command)
+            Divider()
+            Button("切换断点") {}
+                .keyboardShortcut(KeyEquivalent(Character("\u{F705}")), modifiers: .command)
+        }
+
+        // 工具菜单
+        CommandMenu("工具") {
+            Button("编译器选项...") {}
+            Button("编辑器选项...") {}
+            Divider()
+            Button("代码模板管理...") {}
+        }
+
+        // 帮助菜单（追加到默认）
+        CommandGroup(after: .help) {
+            Button("C/C++ 参考手册") {}
+        }
+    }
+}
