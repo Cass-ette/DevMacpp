@@ -19,6 +19,7 @@
 		81E73066210AC58FB9002E38 /* TemplateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF429046AF31DCBCF5B66363 /* TemplateService.swift */; };
 		84D5EAFF80B2120C90C00BA6 /* DebuggerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFC869CB5FB710B0DA69CC /* DebuggerService.swift */; };
 		920D9316919A4B97D008CB48 /* SetupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8C46BDC87A8B24F38CD921 /* SetupService.swift */; };
+		AAD6FB26E1CDBCC49A23F4D6 /* RuntimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23374033EB7F22CAF8557774 /* RuntimeService.swift */; };
 		ACCDD3312BD2036106270F73 /* FileTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7EDD4FF1FEB0BB44CE14C6B /* FileTabBarView.swift */; };
 		C1FB321E6367C4EE001BF353 /* BottomPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C61248FFE8877D3BFE1706 /* BottomPanelView.swift */; };
 		C45293D7899F4647B51E5A27 /* CompilerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A06364538D52BA7287544D /* CompilerService.swift */; };
@@ -37,6 +38,7 @@
 		0826360DE8DB7993E5C1667D /* MonacoEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonacoEditorView.swift; sourceTree = "<group>"; };
 		18CFC869CB5FB710B0DA69CC /* DebuggerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebuggerService.swift; sourceTree = "<group>"; };
 		1D34E3BDC2AC6B697BC7D3BB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		23374033EB7F22CAF8557774 /* RuntimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeService.swift; sourceTree = "<group>"; };
 		2540EFF979D40D6197C52F3C /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		25C61248FFE8877D3BFE1706 /* BottomPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomPanelView.swift; sourceTree = "<group>"; };
 		3030BE6833506E5AB445BF2C /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				48A06364538D52BA7287544D /* CompilerService.swift */,
 				18CFC869CB5FB710B0DA69CC /* DebuggerService.swift */,
 				DFF63B5DDAACDEF37405AD91 /* FileService.swift */,
+				23374033EB7F22CAF8557774 /* RuntimeService.swift */,
 				7A8C46BDC87A8B24F38CD921 /* SetupService.swift */,
 				CF429046AF31DCBCF5B66363 /* TemplateService.swift */,
 			);
@@ -237,6 +240,7 @@
 				ACCDD3312BD2036106270F73 /* FileTabBarView.swift in Sources */,
 				78D3CCCBDD48C6B23FE19054 /* MonacoEditorView.swift in Sources */,
 				F3F313FFB2D8AD105C6E2617 /* ResizableDivider.swift in Sources */,
+				AAD6FB26E1CDBCC49A23F4D6 /* RuntimeService.swift in Sources */,
 				920D9316919A4B97D008CB48 /* SetupService.swift in Sources */,
 				FE2C88C1B979BDDCCBEF9F1A /* SidebarView.swift in Sources */,
 				3B40BED256EC5A5B9DDAE503 /* StatusBarView.swift in Sources */,

@@ -8,6 +8,7 @@ struct DevMacApp: App {
     @StateObject private var compilerService = CompilerService()
     @StateObject private var debuggerService = DebuggerService()
     @StateObject private var templateService = TemplateService()
+    @StateObject private var runtimeService = RuntimeService()
 
     var body: some Scene {
         WindowGroup {
@@ -18,6 +19,7 @@ struct DevMacApp: App {
                 .environmentObject(compilerService)
                 .environmentObject(debuggerService)
                 .environmentObject(templateService)
+                .environmentObject(runtimeService)
                 .frame(minWidth: 800, minHeight: 600)
         }
         .windowStyle(.titleBar)

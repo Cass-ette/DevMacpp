@@ -6,6 +6,7 @@ struct AppMenuCommands: Commands {
     @EnvironmentObject var fileService: FileService
     @EnvironmentObject var compilerService: CompilerService
     @EnvironmentObject var debuggerService: DebuggerService
+    @EnvironmentObject var runtimeService: RuntimeService
 
     var body: some Commands {
         CommandMenu("文件") {
@@ -34,7 +35,6 @@ struct AppMenuCommands: Commands {
             Divider()
 
             Button("关闭") {
-                // 关闭当前文件
                 fileService.newFile(appState: appState)
             }
             .keyboardShortcut("w", modifiers: .command)
@@ -78,32 +78,24 @@ struct AppMenuCommands: Commands {
 
         CommandMenu("执行") {
             Button("编译") {
-                Task {
-                    await compileOnly()
-                }
+                Task { await compileOnly() }
             }
             .keyboardShortcut("\u{F70B}", modifiers: .command) // Cmd+F11
 
             Button("运行") {
-                Task {
-                    await runOnly()
-                }
+                Task { await runOnly() }
             }
             .keyboardShortcut("\u{F70A}", modifiers: .command) // Cmd+F10
 
             Button("编译运行") {
-                Task {
-                    await compileAndRun()
-                }
+                Task { await compileAndRun() }
             }
             .keyboardShortcut("\u{F709}", modifiers: .command) // Cmd+F9
 
             Divider()
 
             Button("调试") {
-                Task {
-                    await startDebug()
-                }
+                Task { await startDebug() }
             }
             .keyboardShortcut("\u{F708}", modifiers: .command) // Cmd+F8
 
@@ -161,8 +153,10 @@ struct AppMenuCommands: Commands {
         appState.selectedBottomTab = .compileLog
         let result = try? await compilerService.compileOnly(filePath: path)
         if result?.success == true, let exePath = result?.executablePath {
-            appState.compileLog = (result?.output ?? "") + "\n运行中...\n"
-            await runExecutable(path: exePath)
+            appState.compileSuccess = true
+            appState.selectedBottomTab = .runtime
+            let workingDir = (path as NSString).deletingLastPathComponent
+            runtimeService.run(executable: exePath, workingDir: workingDir)
         } else {
             appState.compileSuccess = false
             appState.compileErrors = result?.errors ?? []
@@ -186,8 +180,9 @@ struct AppMenuCommands: Commands {
         appState.compileLog = result?.output ?? ""
 
         if result?.success == true, let exePath = result?.executablePath {
-            appState.compileLog = (result?.output ?? "") + "\n运行中...\n"
-            await runExecutable(path: exePath)
+            appState.selectedBottomTab = .runtime
+            let workingDir = (path as NSString).deletingLastPathComponent
+            runtimeService.run(executable: exePath, workingDir: workingDir)
         }
     }
 
@@ -220,21 +215,6 @@ struct AppMenuCommands: Commands {
         } catch {
             appState.compileLog = "调试错误: \(error.localizedDescription)"
             appState.selectedBottomTab = .compileLog
-        }
-    }
-
-    @MainActor
-    func runExecutable(path: String) async {
-        let script = """
-        tell application "Terminal"
-            do script "cd \"$(dirname '\(path)')\" && '\\(path)'; echo ''; read -n 1 -s -r -p '按任意键继续...'"
-            activate
-        end tell
-        """
-
-        var error: NSDictionary?
-        if let appleScript = NSAppleScript(source: script) {
-            appleScript.executeAndReturnError(&error)
         }
     }
 }

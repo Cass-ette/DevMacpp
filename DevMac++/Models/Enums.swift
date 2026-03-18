@@ -3,6 +3,7 @@ import Foundation
 enum BottomTab: String, CaseIterable {
     case compileLog = "编译日志"
     case compileResult = "编译结果"
+    case runtime = "运行"
     case debug = "调试"
     case findResults = "查找结果"
 }

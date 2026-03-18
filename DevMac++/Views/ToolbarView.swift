@@ -7,6 +7,7 @@ struct ToolbarView: View {
     @EnvironmentObject var debuggerService: DebuggerService
     @EnvironmentObject var fileService: FileService
     @EnvironmentObject var templateService: TemplateService
+    @EnvironmentObject var runtimeService: RuntimeService
 
     var body: some View {
         VStack(spacing: 0) {
@@ -83,8 +84,9 @@ struct ToolbarView: View {
                             appState.selectedBottomTab = .compileLog
                             let result = try? await compilerService.compileOnly(filePath: path)
                             if result?.success == true, let exePath = result?.executablePath {
-                                appState.compileLog = (result?.output ?? "") + "\n运行中...\n"
-                                await runExecutable(path: exePath)
+                                appState.selectedBottomTab = .runtime
+                                let workingDir = (path as NSString).deletingLastPathComponent
+                                runtimeService.run(executable: exePath, workingDir: workingDir)
                             } else {
                                 appState.compileSuccess = false
                                 appState.compileErrors = result?.errors ?? []
@@ -149,8 +151,9 @@ struct ToolbarView: View {
             appState.compileErrors = result.errors
 
             if result.success, let exePath = result.executablePath {
-                appState.compileLog = (result.output) + "\n运行中...\n"
-                await runExecutable(path: exePath)
+                appState.selectedBottomTab = .runtime
+                let workingDir = (path as NSString).deletingLastPathComponent
+                runtimeService.run(executable: exePath, workingDir: workingDir)
             }
         } catch {
             appState.compileLog = "Error: \(error.localizedDescription)"
@@ -190,20 +193,6 @@ struct ToolbarView: View {
         }
     }
 
-    @MainActor
-    private func runExecutable(path: String) async {
-        let script = """
-        tell application "Terminal"
-            do script "cd \"$(dirname '\(path)')\" && '\(path)'; echo ''; read -n 1 -s -r -p '按任意键继续...'"
-            activate
-        end tell
-        """
-
-        var error: NSDictionary?
-        if let appleScript = NSAppleScript(source: script) {
-            appleScript.executeAndReturnError(&error)
-        }
-    }
 }
 
 struct ToolbarButton: View {
