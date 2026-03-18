@@ -101,12 +101,31 @@ struct MonacoEditorView: NSViewRepresentable {
         }
 
         private func toggleBreakpoint(line: Int) {
+            let wasRemoved: Bool
             if self.appState.breakpoints.contains(line) {
                 self.appState.breakpoints.remove(line)
+                wasRemoved = true
             } else {
                 self.appState.breakpoints.insert(line)
+                wasRemoved = false
             }
             self.syncBreakpoints()
+
+            // 同步到 LLDB
+            if self.debuggerService.isDebugging, let file = self.appState.currentFilePath {
+                Task { @MainActor in
+                    if wasRemoved {
+                        await self.debuggerService.removeBreakpoint(line: line, file: file)
+                    } else {
+                        // LLDB 断点通过行号设置
+                        _ = await self.sendLLDBCommand("breakpoint set --file '\(file)' --line \(line)")
+                    }
+                }
+            }
+        }
+
+        private func sendLLDBCommand(_ cmd: String) async -> String {
+            await debuggerService.sendRawCommand(cmd)
         }
 
         func syncBreakpoints() {

@@ -34,7 +34,7 @@ class DebuggerService: ObservableObject {
         inputPipe = Pipe()
 
         lldbProcess?.executableURL = URL(fileURLWithPath: "/usr/bin/lldb")
-        lldbProcess?.arguments = ["--no-lldbinit", executable]
+        lldbProcess?.arguments = ["--no-lldbinit", "--", executable]
         lldbProcess?.standardOutput = outputPipe
         lldbProcess?.standardError = outputPipe
         lldbProcess?.standardInput = inputPipe
@@ -52,18 +52,18 @@ class DebuggerService: ObservableObject {
         // 等待启动
         try await Task.sleep(nanoseconds: 300_000_000)
 
+        // 设置源码映射："." -> 源码所在目录
+        let srcDir = (sourceFile as NSString).deletingLastPathComponent
+        await sendCommand("settings set target.source-map . '\(srcDir)'")
+
         // 设置断点
+        let exeName = (executable as NSString).lastPathComponent
         for line in breakpoints.sorted() {
-            await sendCommand("breakpoint set --line \(line)")
+            let bpResult = await sendCommand("breakpoint set --file '\(sourceFile)' --line \(line)")
             debugOutput += "断点已设置: 行 \(line)\n"
         }
 
-        // 设置源码目录
-        let srcDir = (sourceFile as NSString).deletingLastPathComponent
-        await sendCommand("settings set target.source-map . \"\(srcDir)\"")
-
-        // 运行到断点或 main
-        await sendCommand("breakpoint set --name main")
+        // 运行
         await sendCommand("run")
 
         isDebugging = true
@@ -97,6 +97,12 @@ class DebuggerService: ObservableObject {
         guard isDebugging else { return }
         await sendCommand("thread step-in")
         await refreshState()
+    }
+
+    func removeBreakpoint(line: Int, file: String) async {
+        guard isDebugging else { return }
+        _ = await sendCommand("breakpoint delete \(line)")
+        debugOutput += "断点已删除: 行 \(line)\n"
     }
 
     func stepOver() async {
@@ -308,6 +314,16 @@ class DebuggerService: ObservableObject {
         if let idx = watchVariables.firstIndex(where: { $0.name == expression }) {
             watchVariables[idx].value = value
         }
+    }
+
+    func sendRawCommand(_ cmd: String) async -> String {
+        guard let inputPipe = inputPipe else { return "" }
+        let fullCmd = cmd + "\n"
+        if let data = fullCmd.data(using: .utf8) {
+            inputPipe.fileHandleForWriting.write(data)
+        }
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        return buffer
     }
 
     private func sendCommand(_ cmd: String) async -> String {
