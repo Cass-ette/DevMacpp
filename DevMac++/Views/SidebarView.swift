@@ -90,6 +90,7 @@ struct ClassBrowserView: View {
 // 调试模式：监视/局部/调用栈
 struct DebugSidebarView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var debuggerService: DebuggerService
     @State private var selectedTab: String = "监视"
 
     var body: some View {
@@ -129,38 +130,92 @@ struct DebugSidebarView: View {
 
 struct WatchView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var debuggerService: DebuggerService
+    @State private var newWatchExpression: String = ""
+    @State private var isAddingWatch: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            ForEach(appState.watchVariables, id: \.self) { variable in
+            if debuggerService.watchVariables.isEmpty && !isAddingWatch {
+                Text("（无监视）")
+                    .font(.system(size: 11))
+                    .foregroundColor(Color(hex: "#858585"))
+                    .padding(.top, 4)
+            }
+
+            ForEach(debuggerService.watchVariables) { variable in
                 HStack {
-                    Text(variable)
+                    Text(variable.name)
                         .font(.system(size: 11, design: .monospaced))
                         .foregroundColor(Color(hex: "#cccccc"))
                     Spacer()
-                    Text("...")
+                    Text(variable.value)
                         .font(.system(size: 11, design: .monospaced))
-                        .foregroundColor(Color(hex: "#858585"))
+                        .foregroundColor(Color(hex: "#b5cea8"))
                 }
                 .padding(.vertical, 2)
+                .contextMenu {
+                    Button("删除") {
+                        debuggerService.removeWatch(expression: variable.name)
+                    }
+                }
             }
-            Button("+ 添加监视...") {
-                // Plan 4 实现
+
+            if isAddingWatch {
+                HStack {
+                    TextField("表达式", text: $newWatchExpression)
+                        .font(.system(size: 11, design: .monospaced))
+                        .textFieldStyle(.plain)
+                        .onSubmit {
+                            addWatch()
+                        }
+                    Button("添加") {
+                        addWatch()
+                    }
+                    .font(.system(size: 11))
+                    Button("取消") {
+                        isAddingWatch = false
+                        newWatchExpression = ""
+                    }
+                    .font(.system(size: 11))
+                }
+                .padding(.top, 4)
             }
-            .font(.system(size: 11))
-            .foregroundColor(Color(hex: "#007acc"))
-            .buttonStyle(.plain)
-            .padding(.top, 4)
+
+            if !isAddingWatch {
+                Button("+ 添加监视...") {
+                    isAddingWatch = true
+                }
+                .font(.system(size: 11))
+                .foregroundColor(Color(hex: "#007acc"))
+                .buttonStyle(.plain)
+                .padding(.top, 4)
+            }
         }
+    }
+
+    private func addWatch() {
+        let trimmed = newWatchExpression.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        debuggerService.addWatch(expression: trimmed)
+        newWatchExpression = ""
+        isAddingWatch = false
     }
 }
 
 struct LocalsView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var debuggerService: DebuggerService
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            ForEach(appState.localVariables, id: \.name) { variable in
+            if debuggerService.localVariables.isEmpty {
+                Text("（无局部变量）")
+                    .font(.system(size: 11))
+                    .foregroundColor(Color(hex: "#858585"))
+                    .padding(.top, 4)
+            }
+            ForEach(debuggerService.localVariables, id: \.name) { variable in
                 HStack {
                     Text(variable.name)
                         .font(.system(size: 11, design: .monospaced))
@@ -178,14 +233,28 @@ struct LocalsView: View {
 
 struct CallStackView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var debuggerService: DebuggerService
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            ForEach(appState.callStack, id: \.self) { frame in
-                Text(frame)
-                    .font(.system(size: 11, design: .monospaced))
-                    .foregroundColor(Color(hex: "#cccccc"))
-                    .padding(.vertical, 2)
+            if debuggerService.callStack.isEmpty {
+                Text("（无调用栈）")
+                    .font(.system(size: 11))
+                    .foregroundColor(Color(hex: "#858585"))
+                    .padding(.top, 4)
+            }
+            ForEach(debuggerService.callStack) { frame in
+                HStack {
+                    Text("#\(frame.level)")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundColor(Color(hex: "#858585"))
+                        .frame(width: 24, alignment: .leading)
+                    Text(frame.function)
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundColor(Color(hex: "#cccccc"))
+                }
+                .padding(.vertical, 1)
+                .textSelection(.enabled)
             }
         }
     }
