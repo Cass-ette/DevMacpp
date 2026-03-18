@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct ToolbarView: View {
-    @EnvironmentObject var appState: AppState
-
     var body: some View {
         VStack(spacing: 0) {
             // 第一行：文件操作 + 编辑操作
