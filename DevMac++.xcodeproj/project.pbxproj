@@ -27,6 +27,9 @@
 		CCDD223344556677889900AA /* CompilerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223344556677889900AABBCC /* CompilerService.swift */; };
 		EEFF3344556677889900AABB /* SetupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3344556677889900AABBCCDD /* SetupService.swift */; };
 		AABBCCDD44556677889900EE /* DebuggerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556677889900AABBCCDDEEFF /* DebuggerService.swift */; };
+		AABBCCDDEEFF334455667788 /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCCDDEEFF445566778899 /* Template.swift */; };
+		AABBCCDDEEFF556677889900 /* TemplateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCCDDEEFF667788990011 /* TemplateService.swift */; };
+		AABBCCDDEEFF778899001122 /* TemplatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCCDDEEFF889900112233 /* TemplatePickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +54,9 @@
 		223344556677889900AABBCC /* CompilerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerService.swift; sourceTree = "<group>"; };
 		3344556677889900AABBCCDD /* SetupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupService.swift; sourceTree = "<group>"; };
 		556677889900AABBCCDDEEFF /* DebuggerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebuggerService.swift; sourceTree = "<group>"; };
+		AABBCCDDEEFF445566778899 /* Template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
+		AABBCCDDEEFF667788990011 /* TemplateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateService.swift; sourceTree = "<group>"; };
+		AABBCCDDEEFF889900112233 /* TemplatePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplatePickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -78,6 +84,7 @@
 				CE5308733BBD9D23E41CEAB5 /* SidebarView.swift */,
 				911B142F8BCB8DDF971BCF6A /* StatusBarView.swift */,
 				3030BE6833506E5AB445BF2C /* ToolbarView.swift */,
+				AABBCCDDEEFF889900112233 /* TemplatePickerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -130,6 +137,7 @@
 				F4A2B1C3D5E6F7890123A4B5C /* CompilerOptions.swift */,
 				11223344556677889900AABB /* CompileResult.swift */,
 				99887766554433221100AABB /* DebugModels.swift */,
+				AABBCCDDEEFF445566778899 /* Template.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -141,6 +149,7 @@
 				223344556677889900AABBCC /* CompilerService.swift */,
 				3344556677889900AABBCCDD /* SetupService.swift */,
 				556677889900AABBCCDDEEFF /* DebuggerService.swift */,
+				AABBCCDDEEFF667788990011 /* TemplateService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -235,6 +244,9 @@
 				CCDD223344556677889900AA /* CompilerService.swift in Sources */,
 				EEFF3344556677889900AABB /* SetupService.swift in Sources */,
 				AABBCCDD44556677889900EE /* DebuggerService.swift in Sources */,
+				AABBCCDDEEFF334455667788 /* Template.swift in Sources */,
+				AABBCCDDEEFF556677889900 /* TemplateService.swift in Sources */,
+				AABBCCDDEEFF778899001122 /* TemplatePickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

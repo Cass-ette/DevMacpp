@@ -5,12 +5,16 @@ struct ToolbarView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var compilerService: CompilerService
     @EnvironmentObject var debuggerService: DebuggerService
+    @EnvironmentObject var templateService: TemplateService
+    @State private var showTemplatePicker = false
 
     var body: some View {
         VStack(spacing: 0) {
             // 第一行：文件操作 + 编辑操作
             HStack(spacing: 2) {
-                ToolbarButton(icon: "doc", tooltip: "新建 (Cmd+N)") {}
+                ToolbarButton(icon: "doc", tooltip: "新建 (Cmd+N)") {
+                    showTemplatePicker = true
+                }
                 ToolbarButton(icon: "folder", tooltip: "打开 (Cmd+O)") {}
                 ToolbarButton(icon: "square.and.arrow.down", tooltip: "保存 (Cmd+S)") {}
                 ToolbarButton(icon: "square.and.arrow.down.on.square", tooltip: "另存为 (Cmd+Shift+S)") {}
@@ -98,6 +102,9 @@ struct ToolbarView: View {
             }
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
+        }
+        .sheet(isPresented: $showTemplatePicker) {
+            TemplatePickerView()
         }
     }
 

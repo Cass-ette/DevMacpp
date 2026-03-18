@@ -37,10 +37,76 @@
             margin-left: 3px;
             margin-top: 5px;
         }
+        .find-match {
+            background: rgba(255, 200, 0, 0.3);
+        }
+        .find-widget {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #2d2d30;
+            border-bottom: 1px solid #3e3e42;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        .find-input {
+            background: #3c3c3c;
+            border: 1px solid #3e3e42;
+            color: #cccccc;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            width: 200px;
+        }
+        .find-input:focus {
+            outline: none;
+            border-color: #007acc;
+        }
+        .find-btn {
+            background: none;
+            border: 1px solid #3e3e42;
+            color: #cccccc;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .find-btn:hover {
+            background: #3e3e42;
+        }
+        .find-count {
+            color: #858585;
+            font-size: 11px;
+            min-width: 60px;
+        }
+        .find-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #858585;
+            cursor: pointer;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
     <div id="container"></div>
+    <div id="find-widget" class="find-widget" style="display: none;">
+        <input type="text" id="find-input" class="find-input" placeholder="查找...">
+        <input type="text" id="replace-input" class="find-input" placeholder="替换..." style="width: 160px;">
+        <button id="find-prev" class="find-btn">↑</button>
+        <button id="find-next" class="find-btn">↓</button>
+        <button id="replace-btn" class="find-btn">替换</button>
+        <button id="replace-all-btn" class="find-btn">全部替换</button>
+        <span id="find-count" class="find-count"></span>
+        <button id="find-close" class="find-close">&times;</button>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
     <script>
         require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
@@ -83,7 +149,9 @@
                     useShadows: false,
                     verticalScrollbarSize: 10,
                     horizontalScrollbarSize: 10
-                }
+                },
+                // Disable Monaco's built-in find widget (we use our own custom widget)
+                find: ""
             });
 
             // 监听内容变化
@@ -113,6 +181,150 @@
                             line: lineNumber
                         });
                     }
+                }
+            });
+
+            // ===== Find / Replace Widget =====
+            const findWidget = document.getElementById('find-widget');
+            const findInput = document.getElementById('find-input');
+            const replaceInput = document.getElementById('replace-input');
+            const findCountEl = document.getElementById('find-count');
+
+            let currentMatch = 1;
+            let totalMatches = 0;
+            let savedDecorations = [];
+            let savedFindDecorations = [];
+
+            function openFindWidget() {
+                findWidget.style.display = 'flex';
+                findInput.focus();
+                findInput.select();
+            }
+
+            function closeFindWidget() {
+                findWidget.style.display = 'none';
+                findInput.value = '';
+                replaceInput.value = '';
+                findCountEl.textContent = '';
+                if (savedFindDecorations.length > 0) {
+                    window.editor.deltaDecorations(savedFindDecorations, []);
+                    savedFindDecorations = [];
+                }
+                currentMatch = 1;
+                totalMatches = 0;
+            }
+
+            function doFind() {
+                const searchString = findInput.value;
+                if (!searchString) {
+                    findCountEl.textContent = '';
+                    if (savedFindDecorations.length > 0) {
+                        window.editor.deltaDecorations(savedFindDecorations, []);
+                        savedFindDecorations = [];
+                    }
+                    return;
+                }
+                const model = window.editor.getModel();
+                const matches = model.findMatches(searchString, false, false, false, null, true);
+                totalMatches = matches.length;
+                currentMatch = matches.length > 0 ? 1 : 0;
+                findCountEl.textContent = totalMatches > 0 ? `1 / ${totalMatches}` : '无匹配';
+
+                const decorations = matches.map(m => ({
+                    range: m.range,
+                    options: {
+                        className: 'find-match',
+                        overviewRuler: { color: 'rgba(255,200,0,0.5)', position: 1 }
+                    }
+                }));
+                savedFindDecorations = window.editor.deltaDecorations(savedFindDecorations, decorations);
+
+                if (matches.length > 0) {
+                    window.editor.revealLineInCenter(matches[0].range.startLineNumber);
+                    window.editor.setPosition({
+                        lineNumber: matches[0].range.startLineNumber,
+                        column: matches[0].range.startColumn
+                    });
+                }
+            }
+
+            function findNext() {
+                const matches = window.editor.getModel().findMatches(findInput.value, false, false, false, null, true);
+                if (matches.length === 0) return;
+                currentMatch = (currentMatch % matches.length) + 1;
+                const match = matches[currentMatch - 1];
+                window.editor.revealLineInCenter(match.range.startLineNumber);
+                window.editor.setPosition({
+                    lineNumber: match.range.startLineNumber,
+                    column: match.range.startColumn
+                });
+                findCountEl.textContent = `${currentMatch} / ${matches.length}`;
+            }
+
+            function findPrev() {
+                const matches = window.editor.getModel().findMatches(findInput.value, false, false, false, null, true);
+                if (matches.length === 0) return;
+                currentMatch = currentMatch > 1 ? currentMatch - 1 : matches.length;
+                const match = matches[currentMatch - 1];
+                window.editor.revealLineInCenter(match.range.startLineNumber);
+                window.editor.setPosition({
+                    lineNumber: match.range.startLineNumber,
+                    column: match.range.startColumn
+                });
+                findCountEl.textContent = `${currentMatch} / ${matches.length}`;
+            }
+
+            function replaceOne() {
+                const searchString = findInput.value;
+                const replaceString = replaceInput.value;
+                if (!searchString) return;
+                const position = window.editor.getPosition();
+                const model = window.editor.getModel();
+                const matches = model.findMatches(searchString, false, false, false, null, true);
+                for (const match of matches) {
+                    if (match.range.startLineNumber === position.lineNumber &&
+                        match.range.startColumn === position.column) {
+                        model.pushEditOperations([], [{
+                            range: match.range,
+                            text: replaceString
+                        }]);
+                        break;
+                    }
+                }
+                doFind();
+            }
+
+            function replaceAll() {
+                const searchString = findInput.value;
+                const replaceString = replaceInput.value;
+                if (!searchString) return;
+                const model = window.editor.getModel();
+                const matches = model.findMatches(searchString, false, false, false, null, true);
+                model.pushEditOperations([], matches.map(match => ({
+                    range: match.range,
+                    text: replaceString
+                })));
+                doFind();
+            }
+
+            document.getElementById('find-prev').addEventListener('click', findPrev);
+            document.getElementById('find-next').addEventListener('click', findNext);
+            document.getElementById('replace-btn').addEventListener('click', replaceOne);
+            document.getElementById('replace-all-btn').addEventListener('click', replaceAll);
+            document.getElementById('find-close').addEventListener('click', closeFindWidget);
+            findInput.addEventListener('input', doFind);
+            findInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.shiftKey ? findPrev() : findNext();
+                }
+            });
+            document.addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+                    e.preventDefault();
+                    openFindWidget();
+                }
+                if (e.key === 'Escape' && findWidget.style.display !== 'none') {
+                    closeFindWidget();
                 }
             });
 

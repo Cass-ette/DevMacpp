@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>C++ 参考手册</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1e1e1e;
+            color: #cccccc;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #858585;
+            font-size: 12px;
+            margin-bottom: 32px;
+        }
+        h2 {
+            font-size: 16px;
+            color: #4ec9b0;
+            margin: 24px 0 12px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #3e3e42;
+        }
+        .category-title {
+            color: #9cdcfe;
+            font-size: 13px;
+            margin: 12px 0 4px;
+        }
+        code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+        }
+        p { margin: 4px 0; }
+        .search-box {
+            background: #3c3c3c;
+            border: 1px solid #3e3e42;
+            color: #cccccc;
+            padding: 8px 12px;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: #007acc;
+        }
+        .toc {
+            background: #252526;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        .toc-item {
+            padding: 4px 0;
+            color: #4ec9b0;
+            cursor: pointer;
+        }
+        .toc-item:hover {
+            color: #6ad6c0;
+            text-decoration: underline;
+        }
+        .note {
+            background: rgba(214, 157, 46, 0.1);
+            border-left: 3px solid #d69e2e;
+            padding: 8px 12px;
+            margin: 12px 0;
+            font-size: 12px;
+        }
+        section { margin-bottom: 32px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>C++ 参考手册</h1>
+        <p class="subtitle">基于 cppreference.com · DevMac++ 内置帮助</p>
+
+        <input type="text" class="search-box" placeholder="搜索..." id="searchBox" oninput="filterContent()">
+
+        <div class="toc" id="toc">
+            <div class="toc-item" onclick="scrollTo('containers')">容器 (Containers)</div>
+            <div class="toc-item" onclick="scrollTo('algorithms')">算法 (Algorithms)</div>
+            <div class="toc-item" onclick="scrollTo('strings')">字符串 (Strings)</div>
+            <div class="toc-item" onclick="scrollTo('io')">输入输出 (I/O)</div>
+            <div class="toc-item" onclick="scrollTo('utilities')">工具类 (Utilities)</div>
+            <div class="toc-item" onclick="scrollTo('compiling')">编译选项</div>
+        </div>
+
+        <div id="content">
+            <section id="containers">
+                <h2>容器 (Containers)</h2>
+                <div class="category-title">序列容器</div>
+                <p><code>vector&lt;T&gt;</code> - 动态数组，支持随机访问</p>
+                <p><code>deque&lt;T&gt;</code> - 双端队列</p>
+                <p><code>list&lt;T&gt;</code> - 双向链表</p>
+                <p><code>array&lt;T, N&gt;</code> - 固定大小数组</p>
+
+                <div class="category-title">关联容器</div>
+                <p><code>set&lt;T&gt;</code> - 有序集合（红黑树）</p>
+                <p><code>map&lt;K, V&gt;</code> - 有序键值对</p>
+                <p><code>unordered_set&lt;T&gt;</code> - 哈希集合</p>
+                <p><code>unordered_map&lt;K, V&gt;</code> - 哈希映射</p>
+                <p><code>multiset&lt;T&gt;</code> / <code>multimap&lt;K,V&gt;</code> - 可重复版本</p>
+
+                <div class="category-title">常用操作</div>
+                <p><code>v.push_back(x)</code> - 末尾添加</p>
+                <p><code>v.size()</code> - 获取大小</p>
+                <p><code>v.empty()</code> - 判断是否为空</p>
+                <p><code>v.clear()</code> - 清空</p>
+                <p><code>v.begin() / v.end()</code> - 迭代器</p>
+                <p><code>v.erase(it)</code> - 删除</p>
+            </section>
+
+            <section id="algorithms">
+                <h2>算法 (Algorithms)</h2>
+                <div class="category-title">排序与搜索</div>
+                <p><code>sort(v.begin(), v.end())</code> - 排序（平均 O(n log n)）</p>
+                <p><code>stable_sort()</code> - 稳定排序</p>
+                <p><code>reverse(v.begin(), v.end())</code> - 反转</p>
+                <p><code>unique(v.begin(), v.end())</code> - 去重（需配合 erase）</p>
+                <p><code>binary_search(v.begin(), v.end(), x)</code> - 二分查找</p>
+                <p><code>lower_bound(v.begin(), v.end(), x)</code> - 第一个 >= x 的位置</p>
+                <p><code>upper_bound(v.begin(), v.end(), x)</code> - 第一个 > x 的位置</p>
+
+                <div class="category-title">数值运算</div>
+                <p><code>accumulate(v.begin(), v.end(), init)</code> - 求和</p>
+                <p><code>max_element(v.begin(), v.end())</code> - 最大值迭代器</p>
+                <p><code>min_element(v.begin(), v.end())</code> - 最小值迭代器</p>
+
+                <div class="category-title">查找与计数</div>
+                <p><code>find(v.begin(), v.end(), x)</code> - 查找，返回迭代器</p>
+                <p><code>count(v.begin(), v.end(), x)</code> - 计数</p>
+                <p><code>any_of() / all_of() / none_of()</code> - 断言检查</p>
+            </section>
+
+            <section id="strings">
+                <h2>字符串 (Strings)</h2>
+                <div class="category-title">string 常用方法</div>
+                <p><code>s.length()</code> / <code>s.size()</code> - 长度</p>
+                <p><code>s.substr(pos, len)</code> - 子串</p>
+                <p><code>s.find(str)</code> - 查找子串（返回位置或 npos）</p>
+                <p><code>s.replace(pos, len, str)</code> - 替换</p>
+                <p><code>s.erase(pos, len)</code> - 删除</p>
+                <p><code>s.insert(pos, str)</code> - 插入</p>
+                <p><code>to_string(x)</code> - 任意类型转字符串</p>
+                <p><code>stoi(s)</code> / <code>stoll(s)</code> / <code>stod(s)</code> - 字符串转数值</p>
+                <p><code>stringstream ss(s); ss &gt;&gt; x;</code> - 字符串流解析</p>
+
+                <div class="category-title">字符判断</div>
+                <p><code>isdigit(c)</code> / <code>isalpha(c)</code> / <code>isalnum(c)</code></p>
+                <p><code>isspace(c)</code> / <code>isupper(c)</code> / <code>islower(c)</code></p>
+            </section>
+
+            <section id="io">
+                <h2>输入输出 (I/O)</h2>
+                <div class="category-title">C++ 流</div>
+                <p><code>cin &gt;&gt; x</code> - 读取（跳过空格、换行）</p>
+                <p><code>cout &lt;&lt; x</code> - 输出</p>
+                <p><code>getline(cin, s)</code> - 读取整行（含空格）</p>
+                <p><code>cin.get()</code> - 读取单个字符</p>
+                <p><code>cin.ignore(n, delim)</code> - 忽略字符</p>
+
+                <div class="category-title">C 风格（竞赛常用，快于 cin/cout）</div>
+                <p><code>scanf("%d", &amp;x)</code> - 格式化输入</p>
+                <p><code>printf("%d\n", x)</code> - 格式化输出</p>
+                <p><code>gets(s)</code> - 读取一行（已废弃）</p>
+
+                <div class="category-title">加速 IO（必须加！）</div>
+                <p><code>ios::sync_with_stdio(false);</code> - 关闭同步</p>
+                <p><code>cin.tie(nullptr);</code> - 解除 cin 和 cout 绑定</p>
+
+                <div class="note">竞赛提示：在 main 函数开头加这两行可以大幅加速 IO</div>
+            </section>
+
+            <section id="utilities">
+                <h2>工具类 (Utilities)</h2>
+                <div class="category-title">pair 和 tuple</div>
+                <p><code>pair&lt;T1, T2&gt;</code> - 二元组</p>
+                <p><code>make_pair(a, b)</code> - 创建 pair</p>
+                <p><code>p.first / p.second</code> - 访问元素</p>
+                <p><code>tuple&lt;T1, T2, T3&gt;</code> - 多元组（C++11）</p>
+                <p><code>get&lt;i&gt;(t)</code> - 访问第 i 个元素</p>
+
+                <div class="category-title">Lambda 表达式（C++11）</div>
+                <p><code>[](int x) { return x * 2; }</code> - 基本形式</p>
+                <p><code>[&amp;](int x) { return x + y; }</code> - 按引用捕获</p>
+                <p><code>[=](int x) { return x + y; }</code> - 按值捕获</p>
+                <p><code>[x, &amp;y](int z) { }</code> - 混合捕获</p>
+                <p><code>[=]() mutable { x++; }</code> - mutable（修改捕获值）</p>
+
+                <div class="category-title">STL 容器初始化（C++11）</div>
+                <p><code>vector&lt;int&gt; v = {1, 2, 3};</code></p>
+                <p><code>string s = "hello";</code></p>
+                <p><code>for (auto&amp; x : v) { }</code> - 范围 for 循环</p>
+            </section>
+
+            <section id="compiling">
+                <h2>编译选项</h2>
+                <div class="category-title">DevMac++ 编译器配置</div>
+                <p><strong>标准：</strong>C++11（固定）</p>
+                <p><strong>优化：</strong>默认 -O0（可切换 -O1/-O2/-O3）</p>
+                <p><strong>调试：</strong>仅调试时加 -g</p>
+                <p><strong>警告：</strong>可选 -Wall -Wextra</p>
+
+                <div class="note">竞赛提示：使用 C++11 标准的 <code>auto</code>、<code>range-for</code>、<code>lambda</code> 可大幅简化代码</div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function scrollTo(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+        function filterContent() {
+            const q = document.getElementById('searchBox').value.toLowerCase();
+            document.querySelectorAll('#content section').forEach(s => {
+                s.style.display = s.textContent.toLowerCase().includes(q) || q === '' ? 'block' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
