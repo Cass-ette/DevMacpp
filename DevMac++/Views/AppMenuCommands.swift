@@ -1,22 +1,33 @@
 import SwiftUI
 
 struct AppMenuCommands: Commands {
-    let appState: AppState
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var fileService: FileService
 
     var body: some Commands {
         // 文件菜单
         CommandMenu("文件") {
-            Button("新建") {}
+            Button("新建") {
+                fileService.newFile(appState: appState)
+            }
                 .keyboardShortcut("n", modifiers: .command)
-            Button("打开...") {}
+            Button("打开...") {
+                fileService.openFile(appState: appState)
+            }
                 .keyboardShortcut("o", modifiers: .command)
             Divider()
-            Button("保存") {}
+            Button("保存") {
+                fileService.saveFile(appState: appState)
+            }
                 .keyboardShortcut("s", modifiers: .command)
-            Button("另存为...") {}
+            Button("另存为...") {
+                fileService.saveAs(appState: appState)
+            }
                 .keyboardShortcut("s", modifiers: [.command, .shift])
             Divider()
-            Button("关闭") {}
+            Button("关闭") {
+                // Can just call newFile for now
+            }
                 .keyboardShortcut("w", modifiers: .command)
         }
 

@@ -16,6 +16,7 @@
 		78D3CCCBDD48C6B23FE19054 /* MonacoEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0826360DE8DB7993E5C1667D /* MonacoEditorView.swift */; };
 		ACCDD3312BD2036106270F73 /* FileTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7EDD4FF1FEB0BB44CE14C6B /* FileTabBarView.swift */; };
 		C1FB321E6367C4EE001BF353 /* BottomPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C61248FFE8877D3BFE1706 /* BottomPanelView.swift */; };
+		C3D4E5F678901234ABCDEF12 /* FileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F678901234ABCD /* FileService.swift */; };
 		C682672274DBB906E8542531 /* AppMenuCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E012C58ADA008D65B932FE7F /* AppMenuCommands.swift */; };
 		EF35BBA239841B99742ECE75 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2540EFF979D40D6197C52F3C /* Enums.swift */; };
 		F3F313FFB2D8AD105C6E2617 /* ResizableDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6529CEF1A908C08BAA4FF2ED /* ResizableDivider.swift */; };
@@ -32,6 +33,7 @@
 		67440025F07D851CD9374054 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		820B440E31BE25BFF817DBD3 /* DevMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMacApp.swift; sourceTree = "<group>"; };
 		911B142F8BCB8DDF971BCF6A /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F678901234ABCD /* FileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileService.swift; sourceTree = "<group>"; };
 		BC4FF9BC6DF965ECDB29C9EE /* DevMac++.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DevMac++.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE5308733BBD9D23E41CEAB5 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		D7EDD4FF1FEB0BB44CE14C6B /* FileTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTabBarView.swift; sourceTree = "<group>"; };
@@ -47,6 +49,7 @@
 				C4048C2D386D16FE696C90D6 /* Models */,
 				883D3BAD3AD91E8C7393D4D2 /* Resources */,
 				278B092F3D7841CCAFB5C527 /* Views */,
+				F0A1B2C3D4E5F67890123456 /* Services */,
 			);
 			path = "DevMac++";
 			sourceTree = "<group>";
@@ -114,6 +117,14 @@
 				2540EFF979D40D6197C52F3C /* Enums.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		F0A1B2C3D4E5F67890123456 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F678901234ABCD /* FileService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +210,7 @@
 				FE2C88C1B979BDDCCBEF9F1A /* SidebarView.swift in Sources */,
 				3B40BED256EC5A5B9DDAE503 /* StatusBarView.swift in Sources */,
 				2C717679AF41951A2F1B0E1C /* ToolbarView.swift in Sources */,
+				C3D4E5F678901234ABCDEF12 /* FileService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
