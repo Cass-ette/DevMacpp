@@ -26,7 +26,7 @@ struct MonacoEditorView: NSViewRepresentable {
         context.coordinator.webView = webView
 
         // 加载本地 HTML
-        if let htmlPath = Bundle.main.path(forResource: "editor", ofType: "html", inDirectory: "monaco") {
+        if let htmlPath = Bundle.main.path(forResource: "editor", ofType: "html", inDirectory: "monaco-editor") {
             let url = URL(fileURLWithPath: htmlPath)
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         }

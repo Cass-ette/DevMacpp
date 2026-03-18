@@ -40,4 +40,5 @@ class AppState: ObservableObject {
     @Published var selectedSidebarTab: SidebarTab = .project
     @Published var sidebarWidth: CGFloat = 200
     @Published var bottomPanelHeight: CGFloat = 150
+    @Published var showTemplatePicker: Bool = false
 }

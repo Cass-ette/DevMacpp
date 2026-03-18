@@ -7,14 +7,13 @@ struct ToolbarView: View {
     @EnvironmentObject var debuggerService: DebuggerService
     @EnvironmentObject var fileService: FileService
     @EnvironmentObject var templateService: TemplateService
-    @State private var showTemplatePicker = false
 
     var body: some View {
         VStack(spacing: 0) {
             // 第一行：文件操作 + 编辑操作
             HStack(spacing: 2) {
                 ToolbarButton(icon: "doc", tooltip: "新建 (Cmd+N)") {
-                    showTemplatePicker = true
+                    appState.showTemplatePicker = true
                 }
                 ToolbarButton(icon: "folder", tooltip: "打开 (Cmd+O)") {
                     fileService.openFile(appState: appState)
@@ -127,7 +126,7 @@ struct ToolbarView: View {
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
         }
-        .sheet(isPresented: $showTemplatePicker) {
+        .sheet(isPresented: $appState.showTemplatePicker) {
             TemplatePickerView()
         }
     }

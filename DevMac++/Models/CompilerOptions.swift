@@ -12,6 +12,7 @@ struct CompilerOptions {
     func toArguments() -> [String] {
         var args: [String] = ["-std=\(CompilerOptions.standard)"]
         args.append(optimizationLevel)
+        args.append("-mmacosx-version-min=14.0")
         if enableWall { args.append("-Wall") }
         if enableWextra { args.append("-Wextra") }
         if !additionalFlags.isEmpty {
