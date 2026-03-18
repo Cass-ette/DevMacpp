@@ -1,0 +1,134 @@
+<h2>完整布局设计（基于原版 Dev-C++ 5.11）</h2>
+<p class="subtitle">深色主题 + macOS 原生毛玻璃效果</p>
+
+<div class="mockup" style="background: #1e1e1e; border: 1px solid #333; border-radius: 8px; overflow: hidden;">
+  <!-- 菜单栏 -->
+  <div style="background: rgba(45, 45, 48, 0.95); backdrop-filter: blur(20px); padding: 4px 8px; border-bottom: 1px solid #3e3e42; font-size: 12px; color: #ccc;">
+    文件 编辑 搜索 查看 项目 执行 工具 窗口 帮助
+  </div>
+
+  <!-- 工具栏第一行 -->
+  <div style="display: flex; gap: 1px; padding: 6px; background: rgba(45, 45, 48, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid #3e3e42;">
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">📄</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">📁</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">💾</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">💾+</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">❌</button>
+    <div style="width: 1px; height: 32px; background: #3e3e42; margin: 0 4px;"></div>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">🖨️</button>
+    <div style="width: 1px; height: 32px; background: #3e3e42; margin: 0 4px;"></div>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">✂️</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">📋</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">📄</button>
+    <div style="width: 1px; height: 32px; background: #3e3e42; margin: 0 4px;"></div>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">↩️</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">↪️</button>
+    <div style="width: 1px; height: 32px; background: #3e3e42; margin: 0 4px;"></div>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">🔍</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">🔄</button>
+  </div>
+
+  <!-- 工具栏第二行 -->
+  <div style="display: flex; gap: 1px; padding: 6px; background: rgba(45, 45, 48, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid #3e3e42;">
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">⚙️</button>
+    <button style="width: 32px; height: 32px; background: #4caf50; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;">▶️</button>
+    <button style="width: 32px; height: 32px; background: #ff9800; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;">⚡</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">🔧</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">🧹</button>
+    <div style="width: 1px; height: 32px; background: #3e3e42; margin: 0 4px;"></div>
+    <button style="width: 32px; height: 32px; background: #2196f3; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;">🐛</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">⏸️</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">⏹️</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">⏭️</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">⤵️</button>
+    <button style="width: 32px; height: 32px; background: transparent; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; color: #ccc; display: flex; align-items: center; justify-content: center;">⤴️</button>
+  </div>
+
+  <!-- 主内容区 -->
+  <div style="display: flex; height: 400px;">
+    <!-- 左侧边栏 -->
+    <div style="width: 200px; background: rgba(37, 37, 38, 0.95); backdrop-filter: blur(20px); border-right: 1px solid #3e3e42; display: flex; flex-direction: column;">
+      <div style="display: flex; border-bottom: 1px solid #3e3e42; font-size: 11px;">
+        <div style="flex: 1; padding: 6px 8px; background: rgba(30, 30, 30, 0.8); color: #fff; text-align: center; border-right: 1px solid #3e3e42;">项目</div>
+        <div style="flex: 1; padding: 6px 8px; color: #ccc; text-align: center;">类</div>
+      </div>
+      <div style="flex: 1; padding: 8px; font-size: 11px; color: #ccc;">
+        <div style="margin-bottom: 4px;">📁 未命名项目</div>
+        <div style="margin-left: 12px; color: #999;">📄 未保存.cpp</div>
+      </div>
+    </div>
+
+    <!-- 编辑器区域 -->
+    <div style="flex: 1; display: flex; flex-direction: column;">
+      <!-- 文件标签栏 -->
+      <div style="display: flex; background: rgba(45, 45, 48, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid #3e3e42; font-size: 11px;">
+        <div style="padding: 6px 16px; background: rgba(30, 30, 30, 0.8); color: #fff; border-right: 1px solid #3e3e42; display: flex; align-items: center; gap: 8px;">
+          <span>未保存.cpp</span>
+          <span style="color: #999; cursor: pointer;">×</span>
+        </div>
+      </div>
+
+      <!-- Monaco Editor 区域 -->
+      <div style="flex: 1; background: #1e1e1e; padding: 12px; font-family: 'Monaco', monospace; font-size: 13px; color: #d4d4d4; overflow: auto;">
+        <span style="color: #858585;">1</span>  <span style="color: #c586c0;">#include</span> <span style="color: #ce9178;">&lt;iostream&gt;</span><br>
+        <span style="color: #858585;">2</span>  <span style="color: #c586c0;">using namespace</span> <span style="color: #4ec9b0;">std</span>;<br>
+        <span style="color: #858585;">3</span>  <br>
+        <span style="color: #858585;">4</span>  <span style="color: #569cd6;">int</span> <span style="color: #dcdcaa;">main</span>() {<br>
+        <span style="color: #858585;">5</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span style="background: #264f78;">█</span><br>
+        <span style="color: #858585;">6</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #c586c0;">return</span> <span style="color: #b5cea8;">0</span>;<br>
+        <span style="color: #858585;">7</span>  }
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部面板 -->
+  <div style="height: 120px; border-top: 1px solid #3e3e42; background: rgba(37, 37, 38, 0.95); backdrop-filter: blur(20px);">
+    <div style="display: flex; gap: 1px; padding: 4px 8px; background: rgba(45, 45, 48, 0.95); font-size: 11px;">
+      <div style="padding: 4px 12px; background: rgba(30, 30, 30, 0.8); color: #fff; border-top: 2px solid #007acc;">编译日志</div>
+      <div style="padding: 4px 12px; color: #ccc;">编译结果</div>
+      <div style="padding: 4px 12px; color: #ccc;">调试</div>
+      <div style="padding: 4px 12px; color: #ccc;">查找结果</div>
+    </div>
+    <div style="padding: 8px; font-family: monospace; font-size: 11px; color: #ccc;">
+      Compiling single file...<br>
+      - Filename: main.cpp<br>
+      - Compiler: GCC 11.2.0
+    </div>
+  </div>
+
+  <!-- 状态栏 -->
+  <div style="display: flex; justify-content: space-between; padding: 4px 12px; background: rgba(0, 122, 204, 0.2); backdrop-filter: blur(20px); border-top: 1px solid #007acc; font-size: 11px; color: #ccc;">
+    <div>第 5 行，第 5 列</div>
+    <div>插入</div>
+    <div>1.2 KB</div>
+    <div>C++</div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>调试模式时的左侧边栏</h3>
+  <p class="subtitle">点击调试按钮后，左侧边栏切换为调试面板</p>
+
+  <div style="width: 200px; background: rgba(37, 37, 38, 0.95); backdrop-filter: blur(20px); border: 1px solid #3e3e42; border-radius: 4px; margin-top: 12px;">
+    <div style="display: flex; border-bottom: 1px solid #3e3e42; font-size: 11px;">
+      <div style="flex: 1; padding: 6px 8px; background: rgba(30, 30, 30, 0.8); color: #fff; text-align: center; border-right: 1px solid #3e3e42;">监视</div>
+      <div style="flex: 1; padding: 6px 8px; color: #ccc; text-align: center; border-right: 1px solid #3e3e42;">局部</div>
+      <div style="flex: 1; padding: 6px 8px; color: #ccc; text-align: center;">栈</div>
+    </div>
+    <div style="padding: 8px; font-size: 11px; color: #ccc;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px; padding: 2px 4px; background: rgba(255,255,255,0.05);">
+        <span>n</span>
+        <span style="color: #b5cea8;">10</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px; padding: 2px 4px; background: rgba(255,255,255,0.05);">
+        <span>arr[0]</span>
+        <span style="color: #b5cea8;">5</span>
+      </div>
+      <div style="color: #007acc; cursor: pointer; margin-top: 8px;">+ 添加监视...</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px; padding: 16px; background: #f9f9f9; border-left: 3px solid #666;">
+  <p style="margin: 0; font-size: 14px;"><strong>说明：</strong>这里用 emoji 做演示，实际会用 React Icons（通过 SF Symbols 或自定义图标）。毛玻璃效果通过 SwiftUI 的 .background(.ultraThinMaterial) 实现。</p>
+</div>

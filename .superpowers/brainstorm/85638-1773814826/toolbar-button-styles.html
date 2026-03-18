@@ -1,0 +1,214 @@
+<h2>工具栏按钮样式</h2>
+<p class="subtitle">基于方案 A 的完整布局，选择按钮的视觉风格</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>经典图标按钮</h3>
+      <p>图标 + 文字标签，和原版 Dev-C++ 5.11 最接近</p>
+      <div class="mockup" style="margin-top: 12px;">
+        <div style="display: flex; gap: 4px; padding: 8px; background: #e8e8e8; border: 1px solid #ccc; flex-wrap: wrap;">
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">📄</span>
+            <span>新建</span>
+          </button>
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">📁</span>
+            <span>打开</span>
+          </button>
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">💾</span>
+            <span>保存</span>
+          </button>
+          <div style="width: 1px; height: 48px; background: #bbb; margin: 0 4px;"></div>
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">✂️</span>
+            <span>剪切</span>
+          </button>
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">📋</span>
+            <span>复制</span>
+          </button>
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">📄</span>
+            <span>粘贴</span>
+          </button>
+          <div style="width: 1px; height: 48px; background: #bbb; margin: 0 4px;"></div>
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">⚙️</span>
+            <span>编译</span>
+          </button>
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #e8f5e9; border: 1px solid #81c784; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">▶️</span>
+            <span>运行</span>
+          </button>
+          <button style="display: flex; flex-direction: column; align-items: center; padding: 6px 8px; background: #e3f2fd; border: 1px solid #64b5f6; border-radius: 3px; font-size: 11px; min-width: 50px; cursor: pointer;">
+            <span style="font-size: 16px; margin-bottom: 2px;">🐛</span>
+            <span>调试</span>
+          </button>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros"><h4>优点</h4><ul><li>最接近原版风格</li><li>图标+文字，功能清晰</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>占用垂直空间较多</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>纯图标按钮</h3>
+      <p>只显示图标，鼠标悬停显示提示，更紧凑</p>
+      <div class="mockup" style="margin-top: 12px;">
+        <div style="display: flex; gap: 2px; padding: 6px; background: #e8e8e8; border: 1px solid #ccc;">
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">📄</button>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">📁</button>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">💾</button>
+          <div style="width: 1px; height: 32px; background: #bbb; margin: 0 4px;"></div>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">✂️</button>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">📋</button>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">📄</button>
+          <div style="width: 1px; height: 32px; background: #bbb; margin: 0 4px;"></div>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">↩️</button>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">↪️</button>
+          <div style="width: 1px; height: 32px; background: #bbb; margin: 0 4px;"></div>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 18px; cursor: pointer;">⚙️</button>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #e8f5e9; border: 1px solid #81c784; border-radius: 3px; font-size: 18px; cursor: pointer;">▶️</button>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #fff3e0; border: 1px solid #ffb74d; border-radius: 3px; font-size: 18px; cursor: pointer;">⚡</button>
+          <button style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #e3f2fd; border: 1px solid #64b5f6; border-radius: 3px; font-size: 18px; cursor: pointer;">🐛</button>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros"><h4>优点</h4><ul><li>紧凑，节省空间</li><li>编辑区更大</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>需要记住图标含义</li><li>和原版差异较大</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>图标+文字横排</h3>
+      <p>图标在左，文字在右，横向排列，兼顾清晰和紧凑</p>
+      <div class="mockup" style="margin-top: 12px;">
+        <div style="display: flex; gap: 4px; padding: 6px; background: #e8e8e8; border: 1px solid #ccc; flex-wrap: wrap;">
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">📄</span>
+            <span>新建</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">📁</span>
+            <span>打开</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">💾</span>
+            <span>保存</span>
+          </button>
+          <div style="width: 1px; height: 28px; background: #bbb; margin: 0 4px;"></div>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">✂️</span>
+            <span>剪切</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">📋</span>
+            <span>复制</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">📄</span>
+            <span>粘贴</span>
+          </button>
+          <div style="width: 1px; height: 28px; background: #bbb; margin: 0 4px;"></div>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">↩️</span>
+            <span>撤销</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">↪️</span>
+            <span>重做</span>
+          </button>
+          <div style="width: 1px; height: 28px; background: #bbb; margin: 0 4px;"></div>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #aaa; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">⚙️</span>
+            <span>编译</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #e8f5e9; border: 1px solid #81c784; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">▶️</span>
+            <span>运行</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #fff3e0; border: 1px solid #ffb74d; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">⚡</span>
+            <span>编译运行</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #e3f2fd; border: 1px solid #64b5f6; border-radius: 3px; font-size: 12px; cursor: pointer;">
+            <span style="font-size: 16px;">🐛</span>
+            <span>调试</span>
+          </button>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros"><h4>优点</h4><ul><li>功能清晰，易识别</li><li>比方案 A 更紧凑</li><li>现代感更强</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>和原版布局略有不同</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="d" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>macOS 原生风格</h3>
+      <p>使用 macOS 系统风格的按钮，SF Symbols 图标，更符合 Mac 应用习惯</p>
+      <div class="mockup" style="margin-top: 12px;">
+        <div style="display: flex; gap: 8px; padding: 8px 12px; background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%); border-bottom: 1px solid #c0c0c0; align-items: center;">
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: white; border: 1px solid #c0c0c0; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <span style="font-size: 14px;">📄</span>
+            <span>新建</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: white; border: 1px solid #c0c0c0; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <span style="font-size: 14px;">📁</span>
+            <span>打开</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: white; border: 1px solid #c0c0c0; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <span style="font-size: 14px;">💾</span>
+            <span>保存</span>
+          </button>
+          <div style="width: 1px; height: 20px; background: #d0d0d0;"></div>
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: white; border: 1px solid #c0c0c0; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <span style="font-size: 14px;">✂️</span>
+            <span>剪切</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: white; border: 1px solid #c0c0c0; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <span style="font-size: 14px;">📋</span>
+            <span>复制</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: white; border: 1px solid #c0c0c0; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <span style="font-size: 14px;">📄</span>
+            <span>粘贴</span>
+          </button>
+          <div style="width: 1px; height: 20px; background: #d0d0d0;"></div>
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: white; border: 1px solid #c0c0c0; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <span style="font-size: 14px;">⚙️</span>
+            <span>编译</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: linear-gradient(180deg, #5ac85a 0%, #4caf50 100%); color: white; border: 1px solid #45a049; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.15); font-weight: 500;">
+            <span style="font-size: 14px;">▶️</span>
+            <span>运行</span>
+          </button>
+          <button style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: linear-gradient(180deg, #64b5f6 0%, #42a5f5 100%); color: white; border: 1px solid #2196f3; border-radius: 5px; font-size: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.15); font-weight: 500;">
+            <span style="font-size: 14px;">🐛</span>
+            <span>调试</span>
+          </button>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros"><h4>优点</h4><ul><li>最符合 macOS 应用风格</li><li>视觉精致，现代</li><li>用户体验好</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>和原版 Dev-C++ 差异最大</li><li>可能"太 Mac"了</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px; padding: 16px; background: #f9f9f9; border-left: 3px solid #666;">
+  <p style="margin: 0; font-size: 14px;"><strong>说明：</strong>这里用 emoji 做演示图标，实际开发会用真正的图标资源（SF Symbols 或自定义图标）。重点是选择按钮的布局和风格。</p>
+</div>

@@ -1,0 +1,139 @@
+<h2>选择界面布局方案</h2>
+<p class="subtitle">这些方案都保持 Dev-C++ 5.11 的核心布局，但在细节上有所不同</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>完整还原布局</h3>
+      <p>顶部菜单栏 + 完整工具栏（新建/打开/保存/编译/运行/调试等所有按钮）+ 编辑器 + 底部多标签页（编译日志/编译结果/调试/查找结果）</p>
+      <div class="mockup" style="margin-top: 12px;">
+        <div class="mock-nav" style="font-size: 13px; padding: 4px 12px;">文件 编辑 搜索 查看 项目 执行 工具 窗口 帮助</div>
+        <div style="display: flex; gap: 4px; padding: 8px; background: #e8e8e8; border-bottom: 1px solid #ccc; flex-wrap: wrap;">
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">新建</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">打开</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">保存</button>
+          <div style="width: 1px; height: 24px; background: #ccc;"></div>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">剪切</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">复制</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">粘贴</button>
+          <div style="width: 1px; height: 24px; background: #ccc;"></div>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">撤销</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">重做</button>
+          <div style="width: 1px; height: 24px; background: #ccc;"></div>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">编译</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">运行</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">编译运行</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">调试</button>
+        </div>
+        <div style="flex: 1; background: white; padding: 12px; font-family: monospace; font-size: 13px; min-height: 180px;">
+          <span style="color: #999;">1</span>  #include &lt;iostream&gt;<br>
+          <span style="color: #999;">2</span>  using namespace std;<br>
+          <span style="color: #999;">3</span>  <br>
+          <span style="color: #999;">4</span>  int main() {<br>
+          <span style="color: #999;">5</span>  &nbsp;&nbsp;&nbsp;&nbsp;█<br>
+          <span style="color: #999;">6</span>  &nbsp;&nbsp;&nbsp;&nbsp;return 0;<br>
+          <span style="color: #999;">7</span>  }
+        </div>
+        <div style="height: 120px; border-top: 1px solid #ccc; background: #f5f5f5;">
+          <div style="display: flex; gap: 2px; padding: 4px; background: #e0e0e0; font-size: 12px;">
+            <div style="padding: 4px 12px; background: white; border: 1px solid #ccc; border-bottom: none;">编译日志</div>
+            <div style="padding: 4px 12px; background: #e0e0e0;">编译结果</div>
+            <div style="padding: 4px 12px; background: #e0e0e0;">调试</div>
+            <div style="padding: 4px 12px; background: #e0e0e0;">查找结果</div>
+          </div>
+          <div style="padding: 8px; font-family: monospace; font-size: 11px; color: #333;">
+            Compiling single file...<br>
+            - Filename: main.cpp<br>
+            - Compiler: GCC 11.2.0
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros"><h4>优点</h4><ul><li>和原版最接近</li><li>所有功能一目了然</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>工具栏按钮多，占空间</li><li>对新手可能有点复杂</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>精简竞赛布局</h3>
+      <p>顶部菜单栏 + 精简工具栏（只保留：新建/打开/保存/编译运行/调试）+ 编辑器 + 底部双标签页（编译信息/调试）</p>
+      <div class="mockup" style="margin-top: 12px;">
+        <div class="mock-nav" style="font-size: 13px; padding: 4px 12px;">文件 编辑 搜索 执行 工具 帮助</div>
+        <div style="display: flex; gap: 6px; padding: 8px; background: #e8e8e8; border-bottom: 1px solid #ccc;">
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">新建</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">打开</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">保存</button>
+          <div style="width: 1px; height: 24px; background: #ccc;"></div>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">编译运行 (F9)</button>
+          <button class="mock-button" style="padding: 4px 8px; font-size: 12px;">调试 (F8)</button>
+        </div>
+        <div style="flex: 1; background: white; padding: 12px; font-family: monospace; font-size: 13px; min-height: 180px;">
+          <span style="color: #999;">1</span>  #include &lt;iostream&gt;<br>
+          <span style="color: #999;">2</span>  using namespace std;<br>
+          <span style="color: #999;">3</span>  <br>
+          <span style="color: #999;">4</span>  int main() {<br>
+          <span style="color: #999;">5</span>  &nbsp;&nbsp;&nbsp;&nbsp;█<br>
+          <span style="color: #999;">6</span>  &nbsp;&nbsp;&nbsp;&nbsp;return 0;<br>
+          <span style="color: #999;">7</span>  }
+        </div>
+        <div style="height: 120px; border-top: 1px solid #ccc; background: #f5f5f5;">
+          <div style="display: flex; gap: 2px; padding: 4px; background: #e0e0e0; font-size: 12px;">
+            <div style="padding: 4px 12px; background: white; border: 1px solid #ccc; border-bottom: none;">编译信息</div>
+            <div style="padding: 4px 12px; background: #e0e0e0;">调试</div>
+          </div>
+          <div style="padding: 8px; font-family: monospace; font-size: 11px; color: #333;">
+            Compiling...<br>
+            Compilation successful.
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros"><h4>优点</h4><ul><li>界面更清爽</li><li>聚焦竞赛核心功能</li><li>编辑区更大</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>少了一些原版按钮</li><li>需要记住快捷键</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>现代简约布局</h3>
+      <p>顶部菜单栏 + 极简工具栏（只有编译运行/调试两个主按钮）+ 编辑器 + 底部单标签页（自动切换编译/调试信息）</p>
+      <div class="mockup" style="margin-top: 12px;">
+        <div class="mock-nav" style="font-size: 13px; padding: 4px 12px;">文件 编辑 执行 帮助</div>
+        <div style="display: flex; gap: 8px; padding: 10px; background: #f0f0f0; border-bottom: 1px solid #ccc; align-items: center;">
+          <button class="mock-button" style="padding: 6px 16px; font-size: 13px; font-weight: 500;">▶ 编译运行</button>
+          <button class="mock-button" style="padding: 6px 16px; font-size: 13px;">🐛 调试</button>
+          <div style="flex: 1;"></div>
+          <span style="font-size: 12px; color: #666;">未保存的文件.cpp</span>
+        </div>
+        <div style="flex: 1; background: white; padding: 12px; font-family: monospace; font-size: 13px; min-height: 200px;">
+          <span style="color: #999;">1</span>  #include &lt;iostream&gt;<br>
+          <span style="color: #999;">2</span>  using namespace std;<br>
+          <span style="color: #999;">3</span>  <br>
+          <span style="color: #999;">4</span>  int main() {<br>
+          <span style="color: #999;">5</span>  &nbsp;&nbsp;&nbsp;&nbsp;█<br>
+          <span style="color: #999;">6</span>  &nbsp;&nbsp;&nbsp;&nbsp;return 0;<br>
+          <span style="color: #999;">7</span>  }
+        </div>
+        <div style="height: 100px; border-top: 1px solid #ccc; background: #fafafa; padding: 8px; font-family: monospace; font-size: 11px; color: #333;">
+          <div style="font-weight: 500; margin-bottom: 4px;">编译输出</div>
+          Compiling...<br>
+          Compilation successful.
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros"><h4>优点</h4><ul><li>最简洁现代</li><li>编辑区最大化</li><li>适合专注写代码</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>和原版差异最大</li><li>可能不够"熟悉"</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px; padding: 16px; background: #f9f9f9; border-left: 3px solid #666;">
+  <p style="margin: 0; font-size: 14px;"><strong>提示：</strong>所有方案的菜单功能都是完整的，区别只在工具栏按钮的多少。你可以选择视觉上最接近原版的 A，或者更适合竞赛场景的 B/C。</p>
+</div>
