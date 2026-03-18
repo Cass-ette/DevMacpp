@@ -55,6 +55,24 @@ struct AppMenuCommands: Commands {
             }
             .keyboardShortcut("\u{F702}", modifiers: .command) // Cmd+F2
         }
+
+        CommandMenu("帮助") {
+            Button("C/C++ 参考手册") {
+                if let url = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "help") {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+
+            Divider()
+
+            Button("关于 DevMac++") {
+                let alert = NSAlert()
+                alert.messageText = "DevMac++"
+                alert.informativeText = "版本 1.0\nmacOS 上的 Dev-C++ 复刻\n用于算法竞赛训练"
+                alert.alertStyle = .informational
+                alert.runModal()
+            }
+        }
     }
 
     @MainActor
