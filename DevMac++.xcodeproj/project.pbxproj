@@ -23,8 +23,10 @@
 		FE2C88C1B979BDDCCBEF9F1A /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5308733BBD9D23E41CEAB5 /* SidebarView.swift */; };
 		AABB11223344556677889900 /* CompileResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11223344556677889900AABB /* CompileResult.swift */; };
 		D2F8A1B3C4E5D6789012F3A4B /* CompilerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2B1C3D5E6F7890123A4B5C /* CompilerOptions.swift */; };
+		998877665544332211AABBCC /* DebugModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99887766554433221100AABB /* DebugModels.swift */; };
 		CCDD223344556677889900AA /* CompilerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223344556677889900AABBCC /* CompilerService.swift */; };
 		EEFF3344556677889900AABB /* SetupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3344556677889900AABBCCDD /* SetupService.swift */; };
+		AABBCCDD44556677889900EE /* DebuggerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556677889900AABBCCDDEEFF /* DebuggerService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,7 @@
 		1D34E3BDC2AC6B697BC7D3BB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2540EFF979D40D6197C52F3C /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		F4A2B1C3D5E6F7890123A4B5C /* CompilerOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerOptions.swift; sourceTree = "<group>"; };
+		99887766554433221100AABB /* DebugModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugModels.swift; sourceTree = "<group>"; };
 		25C61248FFE8877D3BFE1706 /* BottomPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomPanelView.swift; sourceTree = "<group>"; };
 		3030BE6833506E5AB445BF2C /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		6529CEF1A908C08BAA4FF2ED /* ResizableDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableDivider.swift; sourceTree = "<group>"; };
@@ -47,6 +50,7 @@
 		11223344556677889900AABB /* CompileResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompileResult.swift; sourceTree = "<group>"; };
 		223344556677889900AABBCC /* CompilerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerService.swift; sourceTree = "<group>"; };
 		3344556677889900AABBCCDD /* SetupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupService.swift; sourceTree = "<group>"; };
+		556677889900AABBCCDDEEFF /* DebuggerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebuggerService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -125,6 +129,7 @@
 				2540EFF979D40D6197C52F3C /* Enums.swift */,
 				F4A2B1C3D5E6F7890123A4B5C /* CompilerOptions.swift */,
 				11223344556677889900AABB /* CompileResult.swift */,
+				99887766554433221100AABB /* DebugModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -135,6 +140,7 @@
 				A1B2C3D4E5F678901234ABCD /* FileService.swift */,
 				223344556677889900AABBCC /* CompilerService.swift */,
 				3344556677889900AABBCCDD /* SetupService.swift */,
+				556677889900AABBCCDDEEFF /* DebuggerService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -225,8 +231,10 @@
 				C3D4E5F678901234ABCDEF12 /* FileService.swift in Sources */,
 				D2F8A1B3C4E5D6789012F3A4B /* CompilerOptions.swift in Sources */,
 				AABB11223344556677889900 /* CompileResult.swift in Sources */,
+				998877665544332211AABBCC /* DebugModels.swift in Sources */,
 				CCDD223344556677889900AA /* CompilerService.swift in Sources */,
 				EEFF3344556677889900AABB /* SetupService.swift in Sources */,
+				AABBCCDD44556677889900EE /* DebuggerService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
