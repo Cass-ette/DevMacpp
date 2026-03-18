@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 @MainActor
 class DebuggerService: ObservableObject {
@@ -13,67 +12,62 @@ class DebuggerService: ObservableObject {
     @Published var debugOutput: String = ""
     @Published var debuggerError: String? = nil
 
-    private var gdbProcess: Process?
+    private var lldbProcess: Process?
     private var outputPipe: Pipe?
     private var inputPipe: Pipe?
-    private var commandQueue: [String] = []
-    private var pendingCommands: [String: (Result<[String: Any], Error>) -> Void] = [:]
-    private var sequenceNumber: Int = 0
-    private var currentExecutable: String?
     private var buffer: String = ""
-
-    var gdbPath: String {
-        if FileManager.default.fileExists(atPath: "/opt/homebrew/bin/gdb") {
-            return "/opt/homebrew/bin/gdb"
-        }
-        return "gdb"
-    }
 
     // MARK: - Public API
 
     func startDebug(executable: String, sourceFile: String, breakpoints: Set<Int>) async throws {
         guard !isDebugging else { return }
 
-        currentExecutable = executable
+        currentLine = nil
         currentFile = sourceFile
         debuggerError = nil
         debugOutput = ""
+        localVariables = []
+        callStack = []
 
-        gdbProcess = Process()
+        lldbProcess = Process()
         outputPipe = Pipe()
         inputPipe = Pipe()
 
-        gdbProcess?.executableURL = URL(fileURLWithPath: gdbPath)
-        gdbProcess?.arguments = ["-i", "mi", executable]
-        gdbProcess?.standardOutput = outputPipe
-        gdbProcess?.standardError = outputPipe
-        gdbProcess?.standardInput = inputPipe
+        lldbProcess?.executableURL = URL(fileURLWithPath: "/usr/bin/lldb")
+        lldbProcess?.arguments = ["--no-lldbinit", executable]
+        lldbProcess?.standardOutput = outputPipe
+        lldbProcess?.standardError = outputPipe
+        lldbProcess?.standardInput = inputPipe
 
         setupOutputHandler()
 
         do {
-            try gdbProcess?.run()
+            try lldbProcess?.run()
         } catch {
             throw DebugError.launchFailed(error.localizedDescription)
         }
 
-        try await Task.sleep(nanoseconds: 500_000_000)
+        debugOutput += "LLDB 调试器已启动。\n"
 
-        sendCommand("-gdb-set print sevenbit-strings off")
-        sendCommand("-gdb-set charset UTF-8")
-        sendCommand("-file-exec-and-symbols \(executable)")
+        // 等待启动
+        try await Task.sleep(nanoseconds: 300_000_000)
 
-        for line in breakpoints {
-            _ = await sendCommandSync("-break-insert \(sourceFile):\(line)")
-            debugOutput += "Breakpoint set at line \(line)\n"
+        // 设置断点
+        for line in breakpoints.sorted() {
+            await sendCommand("breakpoint set --line \(line)")
+            debugOutput += "断点已设置: 行 \(line)\n"
         }
 
-        _ = await sendCommandSync("-break-insert main")
-        _ = await sendCommandSync("-exec-run")
+        // 设置源码目录
+        let srcDir = (sourceFile as NSString).deletingLastPathComponent
+        await sendCommand("settings set target.source-map . \"\(srcDir)\"")
+
+        // 运行到断点或 main
+        await sendCommand("breakpoint set --name main")
+        await sendCommand("run")
 
         isDebugging = true
         isPaused = true
-        debugOutput += "Debugging started: \(executable)\n"
 
         await refreshState()
     }
@@ -82,11 +76,11 @@ class DebuggerService: ObservableObject {
         guard isDebugging else { return }
 
         Task {
-            _ = await sendCommandSync("-exec-abort")
+            await sendCommand("process kill")
         }
 
-        gdbProcess?.terminate()
-        gdbProcess = nil
+        lldbProcess?.terminate()
+        lldbProcess = nil
         outputPipe = nil
         inputPipe = nil
 
@@ -95,44 +89,42 @@ class DebuggerService: ObservableObject {
         currentLine = nil
         localVariables = []
         callStack = []
-        debugOutput += "Debugging stopped.\n"
+        watchVariables = []
+        debugOutput += "调试已停止。\n"
     }
 
     func stepInto() async {
         guard isDebugging else { return }
-        _ = await sendCommandSync("-exec-step")
+        await sendCommand("thread step-in")
         await refreshState()
     }
 
     func stepOver() async {
         guard isDebugging else { return }
-        _ = await sendCommandSync("-exec-next")
+        await sendCommand("thread step-over")
         await refreshState()
     }
 
     func stepOut() async {
         guard isDebugging else { return }
-        _ = await sendCommandSync("-exec-finish")
+        await sendCommand("thread step-out")
         await refreshState()
     }
 
     func continue_() async {
         guard isDebugging else { return }
-        _ = await sendCommandSync("-exec-continue")
+        await sendCommand("continue")
         await refreshState()
     }
 
     func addWatch(expression: String) {
         guard !watchVariables.contains(where: { $0.name == expression }) else { return }
-        watchVariables.append(WatchVariable(name: expression))
+        watchVariables.append(WatchVariable(name: expression, value: "..."))
 
         Task {
-            if isDebugging {
-                let result = await sendCommandSync("-data-evaluate-expression \(expression)")
-                if let value = result["value"] as? String {
-                    updateWatchValue(expression: expression, value: value)
-                }
-            }
+            let result = await sendCommand("frame variable \(expression)")
+            let value = parseVariableValue(result)
+            updateWatchValue(expression: expression, value: value)
         }
     }
 
@@ -148,90 +140,168 @@ class DebuggerService: ObservableObject {
             guard !data.isEmpty else { return }
             if let output = String(data: data, encoding: .utf8) {
                 Task { @MainActor in
-                    self?.handleGDBOutput(output)
+                    self?.handleLLDBOutput(output)
                 }
             }
         }
 
-        gdbProcess?.terminationHandler = { [weak self] _ in
+        lldbProcess?.terminationHandler = { [weak self] _ in
             Task { @MainActor in
-                self?.handleGDBTerminated()
+                self?.handleLLDBTerminated()
             }
         }
     }
 
-    private func handleGDBOutput(_ output: String) {
+    private func handleLLDBOutput(_ output: String) {
         buffer += output
+
         let lines = buffer.components(separatedBy: .newlines)
         buffer = lines.last ?? ""
+
         for line in lines.dropLast() {
-            parseGDBLine(line)
+            parseLLDBLine(line)
         }
     }
 
-    private func parseGDBLine(_ line: String) {
+    private func parseLLDBLine(_ line: String) {
         guard !line.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         debugOutput += line + "\n"
 
-        if line.hasPrefix("(gdb)") {
-            processPendingAsync()
-            return
+        // 检测是否停止
+        if line.contains("stopped") || line.contains("exited") || line.contains("stopped due to") {
+            isPaused = true
+            Task { await refreshState() }
         }
 
-        if line.hasPrefix("^done") || line.hasPrefix("^running") ||
-           line.hasPrefix("^stopped") || line.hasPrefix("=") {
-            if let dict = parseMIResult(line) {
-                handleAsyncMessage(dict, raw: line)
-            }
+        // 解析当前帧信息
+        if line.contains("->") || line.contains("frame #") {
+            parseFrame(from: line)
         }
     }
 
-    private func handleAsyncMessage(_ dict: [String: Any], raw: String) {
-        if raw.hasPrefix("^stopped") {
-            isPaused = true
-            if let reason = dict["reason"] as? String {
-                debuggerError = nil
-                if reason == "exited" {
-                    stopDebug()
-                    return
+    private func parseFrame(from line: String) {
+        // 尝试解析 "frame #0: 0x... at xxx.cpp:5"
+        let framePattern = #"frame #(\d+): 0x[0-9a-f]+ at (.+?):(\d+)"#
+        if let regex = try? NSRegularExpression(pattern: framePattern),
+           let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)) {
+            if let fileRange = Range(match.range(at: 2), in: line),
+               let lineRange = Range(match.range(at: 3), in: line) {
+                let file = String(line[fileRange]).trimmingCharacters(in: .whitespaces)
+                if let lineNum = Int(line[lineRange]) {
+                    currentFile = file
+                    currentLine = lineNum
                 }
             }
-            if let frame = dict["frame"] as? [String: Any] {
-                if let file = frame["file"] as? String { currentFile = file }
-                if let line = frame["line"] as? Int { currentLine = line }
+        }
+
+        // 尝试解析 "at xxx.cpp:5"
+        let atPattern = #"at (.+?):(\d+)"#
+        if currentLine == nil,
+           let regex = try? NSRegularExpression(pattern: atPattern),
+           let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)) {
+            if let fileRange = Range(match.range(at: 1), in: line),
+               let lineRange = Range(match.range(at: 2), in: line) {
+                let file = String(line[fileRange]).trimmingCharacters(in: .whitespaces)
+                if let lineNum = Int(line[lineRange]) {
+                    currentFile = file
+                    currentLine = lineNum
+                }
             }
-            Task { await refreshState() }
         }
     }
 
     private func refreshState() async {
-        let localsResult = await sendCommandSync("-stack-list-locals 0")
-        if let locals = localsResult["locals"] as? [[String: Any]] {
-            localVariables = locals.compactMap { local -> (String, String)? in
-                guard let name = local["name"] as? String else { return nil }
-                let value = (local["value"] as? String) ?? "..."
-                return (name, value)
+        // 获取当前栈帧
+        let btResult = await sendCommand("bt")
+        parseBacktrace(from: btResult)
+
+        // 获取局部变量
+        let localsResult = await sendCommand("frame variable")
+        parseLocals(from: localsResult)
+
+        // 获取当前行
+        let whereResult = await sendCommand("frame info")
+        parseFrameInfo(from: whereResult)
+    }
+
+    private func parseBacktrace(from output: String) {
+        var frames: [StackFrame] = []
+        let lines = output.components(separatedBy: .newlines)
+
+        for line in lines {
+            // frame #0: 0x... at xxx.cpp:5
+            let pattern = #"frame #(\d+): 0x[0-9a-f]+ at (.+?):(\d+)"#
+            if let regex = try? NSRegularExpression(pattern: pattern),
+               let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)) {
+                if let levelRange = Range(match.range(at: 1), in: line),
+                   let fileRange = Range(match.range(at: 2), in: line),
+                   let lineRange = Range(match.range(at: 3), in: line) {
+                    let level = Int(line[levelRange]) ?? 0
+                    let file = String(line[fileRange]).trimmingCharacters(in: .whitespaces)
+                    let lineNum = Int(line[lineRange]) ?? 0
+                    frames.append(StackFrame(level: level, function: file, file: file, line: lineNum))
+                }
             }
         }
 
-        let stackResult = await sendCommandSync("-stack-list-frames")
-        if let stack = stackResult["stack"] as? [[String: Any]] {
-            callStack = stack.compactMap { frame -> StackFrame? in
-                guard let level = frame["level"] as? Int,
-                      let func_ = frame["func"] as? String else { return nil }
-                let file = (frame["file"] as? String) ?? "?"
-                let line = (frame["line"] as? Int) ?? 0
-                return StackFrame(level: level, function: func_, file: file, line: line)
+        if !frames.isEmpty {
+            callStack = frames
+        }
+    }
+
+    private func parseLocals(from output: String) {
+        var locals: [(name: String, value: String)] = []
+        let lines = output.components(separatedBy: .newlines)
+
+        for line in lines {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if trimmed.isEmpty || trimmed.hasPrefix("(") || trimmed == "no variables" { continue }
+
+            // "x = 10" 或 "(int) x = 10"
+            let parts = trimmed.components(separatedBy: "=")
+            if parts.count >= 2 {
+                let namePart = parts[0].trimmingCharacters(in: .whitespaces)
+                    .replacingOccurrences(of: #"\(.*\)"#, with: "", options: .regularExpression)
+                    .trimmingCharacters(in: .whitespaces)
+                let valuePart = parts.dropFirst().joined(separator: "=").trimmingCharacters(in: .whitespaces)
+
+                if !namePart.isEmpty && !namePart.hasPrefix("[") && namePart.hasPrefix(" ") == false {
+                    locals.append((name: namePart, value: valuePart))
+                }
             }
         }
 
-        for i in watchVariables.indices {
-            let expr = watchVariables[i].name
-            let result = await sendCommandSync("-data-evaluate-expression \(expr)")
-            if let value = result["value"] as? String {
-                watchVariables[i].value = value
+        if !locals.isEmpty {
+            localVariables = locals
+        }
+    }
+
+    private func parseFrameInfo(from output: String) {
+        // "-> source.cpp:5" 或 "frame #0"
+        if let lineMatch = output.range(of: #":\d+$"#, options: .regularExpression) {
+            let beforeLine = output[..<lineMatch.lowerBound]
+            if let fileMatch = beforeLine.range(of: #"[\w/]+\.\w+$"#, options: .regularExpression) {
+                let file = String(output[fileMatch])
+                let lineStr = String(output[lineMatch]).trimmingCharacters(in: CharacterSet(charactersIn: ":"))
+                if let lineNum = Int(lineStr) {
+                    currentFile = file
+                    currentLine = lineNum
+                }
             }
         }
+    }
+
+    private func parseVariableValue(_ output: String) -> String {
+        let lines = output.components(separatedBy: .newlines)
+        for line in lines {
+            if line.contains("=") {
+                let parts = line.components(separatedBy: "=")
+                if parts.count >= 2 {
+                    return parts.dropFirst().joined(separator: "=").trimmingCharacters(in: .whitespaces)
+                }
+            }
+        }
+        return "..."
     }
 
     func updateWatchValue(expression: String, value: String) {
@@ -240,71 +310,37 @@ class DebuggerService: ObservableObject {
         }
     }
 
-    private func sendCommand(_ cmd: String) {
-        guard let inputPipe = inputPipe else { return }
-        let data = (cmd + "\n").data(using: .utf8)!
+    private func sendCommand(_ cmd: String) async -> String {
+        guard let inputPipe = inputPipe else { return "" }
+
+        let fullCmd = cmd + "\n"
+        let data = fullCmd.data(using: .utf8)!
         inputPipe.fileHandleForWriting.write(data)
+
+        // 等待一小段时间让输出返回
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        // 从 buffer 中提取相关行
+        return buffer
     }
 
-    private func sendCommandSync(_ cmd: String) async -> [String: Any] {
-        sequenceNumber += 1
-        let fullCmd = "-\(sequenceNumber)\(cmd)"
-        sendCommand(fullCmd)
-
-        return await withCheckedContinuation { continuation in
-            let seq = "-\(sequenceNumber)"
-            pendingCommands[seq] = { result in
-                switch result {
-                case .success(let dict): continuation.resume(returning: dict)
-                case .failure: continuation.resume(returning: [:])
-                }
-            }
-            Task {
-                try? await Task.sleep(nanoseconds: 5_000_000_000)
-                if let pending = self.pendingCommands.removeValue(forKey: seq) {
-                    pending(.success([:]))
-                }
-            }
-        }
-    }
-
-    private func parseMIResult(_ line: String) -> [String: Any]? {
-        guard let range = line.range(of: "{") else { return nil }
-        let jsonStr = String(line[range.lowerBound...])
-        var result: [String: Any] = [:]
-        let pairs = jsonStr.components(separatedBy: ",")
-        for pair in pairs {
-            let kv = pair.components(separatedBy: "=")
-            if kv.count == 2 {
-                let key = kv[0].trimmingCharacters(in: CharacterSet(charactersIn: "\"{ "))
-                let value = kv[1].trimmingCharacters(in: CharacterSet(charactersIn: "\" }"))
-                result[key] = value
-            }
-        }
-        return result
-    }
-
-    private func processPendingAsync() {
-        // Process waiting command callbacks
-    }
-
-    private func handleGDBTerminated() {
+    private func handleLLDBTerminated() {
         isDebugging = false
         isPaused = false
-        debugOutput += "GDB process terminated.\n"
+        debugOutput += "\n[调试器已退出]\n"
     }
 }
 
 enum DebugError: Error, LocalizedError {
     case launchFailed(String)
     case notCompiled
-    case gdbNotSigned
+    case debuggerNotAvailable
 
     var errorDescription: String? {
         switch self {
-        case .launchFailed(let msg): return "GDB 启动失败: \(msg)"
+        case .launchFailed(let msg): return "调试器启动失败: \(msg)"
         case .notCompiled: return "请先编译程序（带 -g 选项）"
-        case .gdbNotSigned: return "GDB 未签名，无法调试进程"
+        case .debuggerNotAvailable: return "调试器不可用"
         }
     }
 }
