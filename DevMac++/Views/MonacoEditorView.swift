@@ -3,6 +3,7 @@ import WebKit
 
 struct MonacoEditorView: NSViewRepresentable {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var debuggerService: DebuggerService
 
     func makeNSView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
@@ -34,19 +35,27 @@ struct MonacoEditorView: NSViewRepresentable {
     }
 
     func updateNSView(_ webView: WKWebView, context: Context) {
-        // 同步内容（如果需要）
+        // 同步调试状态
+        if let line = context.coordinator.debuggerService.currentLine {
+            context.coordinator.highlightDebugLine(line)
+        } else {
+            context.coordinator.highlightDebugLine(nil)
+        }
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(appState: appState)
+        Coordinator(appState: appState, debuggerService: debuggerService)
     }
 
     class Coordinator: NSObject, WKScriptMessageHandler {
         let appState: AppState
+        let debuggerService: DebuggerService
         weak var webView: WKWebView?
+        var currentDebugLine: Int? = nil
 
-        init(appState: AppState) {
+        init(appState: AppState, debuggerService: DebuggerService) {
             self.appState = appState
+            self.debuggerService = debuggerService
             super.init()
         }
 
@@ -135,6 +144,43 @@ struct MonacoEditorView: NSViewRepresentable {
                 .replacingOccurrences(of: "\n", with: "\\n")
                 .replacingOccurrences(of: "\r", with: "\\r")
             webView.evaluateJavaScript("if (window.editor) window.editor.setValue('\(escaped)');", completionHandler: nil)
+        }
+
+        func highlightDebugLine(_ line: Int?) {
+            guard let webView = self.webView else { return }
+
+            let removeJs = """
+            if (window.debugLineDecoration) {
+                window.editor.deltaDecorations([window.debugLineDecoration], []);
+                window.debugLineDecoration = null;
+            }
+            """
+            webView.evaluateJavaScript(removeJs, completionHandler: nil)
+
+            currentDebugLine = line
+
+            if let line = line {
+                let js = """
+                if (window.editor) {
+                    window.debugLineDecoration = window.editor.deltaDecorations([], [{
+                        range: new monaco.Range(\(line), 1, \(line), 1),
+                        options: {
+                            isWholeLine: true,
+                            className: 'debug-line',
+                            glyphMarginClassName: 'debug-glyph'
+                        }
+                    }]);
+                    window.editor.revealLineInCenter(\(line));
+                }
+                """
+                webView.evaluateJavaScript(js, completionHandler: nil)
+            }
+        }
+
+        func goToLine(_ line: Int) {
+            guard let webView = self.webView else { return }
+            let js = "window.editor.revealLineInCenter(\(line)); window.editor.setPosition({ lineNumber: \(line), column: 1 });"
+            webView.evaluateJavaScript(js, completionHandler: nil)
         }
 
         func goToLine(_ line: Int, column: Int) {

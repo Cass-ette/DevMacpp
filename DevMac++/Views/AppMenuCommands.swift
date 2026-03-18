@@ -86,13 +86,12 @@ struct AppMenuCommands: Commands {
             appState.selectedBottomTab = .compileLog
 
             if result.success, let exePath = result.executablePath {
-                try debuggerService.startDebug(
+                try await debuggerService.startDebug(
                     executable: exePath,
                     sourceFile: path,
                     breakpoints: appState.breakpoints
                 )
                 appState.isDebugging = true
-                appState.selectedSidebarTab = .debug
                 appState.selectedBottomTab = .debug
             }
         } catch {
