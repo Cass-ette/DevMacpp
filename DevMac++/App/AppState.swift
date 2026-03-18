@@ -22,6 +22,8 @@ class AppState: ObservableObject {
     @Published var isCompiling: Bool = false
     @Published var compileLog: String = ""
     @Published var compileOutput: String = ""
+    @Published var compileErrors: [CompileError] = []
+    @Published var compileSuccess: Bool = false
     @Published var lastCompiledPath: String? = nil
     @Published var lastCompiledWithDebug: Bool = false
 

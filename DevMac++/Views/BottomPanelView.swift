@@ -30,18 +30,37 @@ struct BottomPanelView: View {
                             Text(appState.compileLog.isEmpty ? "就绪" : appState.compileLog)
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(Color(hex: "#cccccc"))
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         case .compileResult:
-                            Text(appState.compileOutput.isEmpty ? "" : appState.compileOutput)
-                                .font(.system(size: 11, design: .monospaced))
-                                .foregroundColor(Color(hex: "#cccccc"))
+                            VStack(alignment: .leading, spacing: 2) {
+                                if appState.compileSuccess {
+                                    Text("编译成功")
+                                        .font(.system(size: 11, design: .monospaced))
+                                        .foregroundColor(Color(hex: "#4caf50"))
+                                } else if !appState.compileErrors.isEmpty {
+                                    ForEach(appState.compileErrors) { error in
+                                        Text("\(error.file):\(error.line):\(error.column): \(error.message)")
+                                            .font(.system(size: 11, design: .monospaced))
+                                            .foregroundColor(Color(hex: "#f44336"))
+                                            .textSelection(.enabled)
+                                    }
+                                } else {
+                                    Text(appState.compileOutput.isEmpty ? "" : appState.compileOutput)
+                                        .font(.system(size: 11, design: .monospaced))
+                                        .foregroundColor(Color(hex: "#cccccc"))
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         case .debug:
                             Text("调试输出将显示在这里")
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(Color(hex: "#858585"))
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         case .findResults:
                             Text("查找结果将显示在这里")
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(Color(hex: "#858585"))
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                     Spacer()
