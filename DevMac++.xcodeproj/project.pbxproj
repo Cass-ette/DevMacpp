@@ -11,6 +11,10 @@
 		21CCF9A06B9A0E7BEE6C5834 /* DevMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820B440E31BE25BFF817DBD3 /* DevMacApp.swift */; };
 		94879AD508C6F9075A095CD1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61F78C5B3BF6127AB180DE8 /* ContentView.swift */; };
 		EF35BBA239841B99742ECE75 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2540EFF979D40D6197C52F3C /* Enums.swift */; };
+		TOOLBARBUILD001 /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TOOLBARREF001 /* ToolbarView.swift */; };
+		SIDEBARBUILD001 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SIDEBARREF001 /* SidebarView.swift */; };
+		BOTTOMPANELBUILD001 /* BottomPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BOTTOMPANELREF001 /* BottomPanelView.swift */; };
+		STATUSBARBUILD001 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STATUSBARREF001 /* StatusBarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +23,10 @@
 		820B440E31BE25BFF817DBD3 /* DevMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMacApp.swift; sourceTree = "<group>"; };
 		BC4FF9BC6DF965ECDB29C9EE /* DevMac++.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DevMac++.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C61F78C5B3BF6127AB180DE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		TOOLBARREF001 /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
+		SIDEBARREF001 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		BOTTOMPANELREF001 /* BottomPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomPanelView.swift; sourceTree = "<group>"; };
+		STATUSBARREF001 /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -27,6 +35,7 @@
 			children = (
 				56DAE17ED0D5081EFFCF35B5 /* App */,
 				C4048C2D386D16FE696C90D6 /* Models */,
+				AABB11223344556677889900 /* Views */,
 			);
 			path = "DevMac++";
 			sourceTree = "<group>";
@@ -51,7 +60,6 @@
 			isa = PBXGroup;
 			children = (
 				67440025F07D851CD9374054 /* AppState.swift */,
-				C61F78C5B3BF6127AB180DE8 /* ContentView.swift */,
 				820B440E31BE25BFF817DBD3 /* DevMacApp.swift */,
 			);
 			path = App;
@@ -63,6 +71,18 @@
 				2540EFF979D40D6197C52F3C /* Enums.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		AABB11223344556677889900 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C61F78C5B3BF6127AB180DE8 /* ContentView.swift */,
+				TOOLBARREF001 /* ToolbarView.swift */,
+				SIDEBARREF001 /* SidebarView.swift */,
+				BOTTOMPANELREF001 /* BottomPanelView.swift */,
+				STATUSBARREF001 /* StatusBarView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,6 +148,10 @@
 				94879AD508C6F9075A095CD1 /* ContentView.swift in Sources */,
 				21CCF9A06B9A0E7BEE6C5834 /* DevMacApp.swift in Sources */,
 				EF35BBA239841B99742ECE75 /* Enums.swift in Sources */,
+				TOOLBARBUILD001 /* ToolbarView.swift in Sources */,
+				SIDEBARBUILD001 /* SidebarView.swift in Sources */,
+				BOTTOMPANELBUILD001 /* BottomPanelView.swift in Sources */,
+				STATUSBARBUILD001 /* StatusBarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

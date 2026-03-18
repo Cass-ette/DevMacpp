@@ -16,7 +16,7 @@ struct ContentView: View {
             HSplitView {
                 SidebarView()
                     .frame(minWidth: 150, idealWidth: appState.sidebarWidth, maxWidth: 400)
-                    .background(.ultraThinMaterial)
+                    .background(Color(hex: "#252526"))
 
                 // 编辑器占位（Plan 2 实现）
                 EditorPlaceholderView()
