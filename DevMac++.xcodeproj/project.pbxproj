@@ -32,6 +32,7 @@
 		F3C7CB9FD089851FE9A010C9 /* CompileResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D61297C32F59D29E880942 /* CompileResult.swift */; };
 		F3F313FFB2D8AD105C6E2617 /* ResizableDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6529CEF1A908C08BAA4FF2ED /* ResizableDivider.swift */; };
 		FE2C88C1B979BDDCCBEF9F1A /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5308733BBD9D23E41CEAB5 /* SidebarView.swift */; };
+		FF001122334455667788AABB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE001122334455667788AABB /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		D97073CF8A3CB6DFAC24A57D /* TemplatePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplatePickerView.swift; sourceTree = "<group>"; };
 		DFF63B5DDAACDEF37405AD91 /* FileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileService.swift; sourceTree = "<group>"; };
 		E012C58ADA008D65B932FE7F /* AppMenuCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMenuCommands.swift; sourceTree = "<group>"; };
+		EE001122334455667788AABB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F54F906A332E63993E7D8FD8 /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,6 +69,7 @@
 		0CC27D0291C948838A22E9A8 /* DevMac++ */ = {
 			isa = PBXGroup;
 			children = (
+				EE001122334455667788AABB /* Assets.xcassets */,
 				56DAE17ED0D5081EFFCF35B5 /* App */,
 				C4048C2D386D16FE696C90D6 /* Models */,
 				DA5E7301642AF77416493CED /* Services */,
@@ -213,6 +216,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF001122334455667788AABB /* Assets.xcassets in Resources */,
 				3D486AA8024568AEAEB19103 /* index.html in Resources */,
 				DA5C594795C6BB0BA0BBD45A /* monaco-editor in Resources */,
 			);

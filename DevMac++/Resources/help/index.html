@@ -94,6 +94,9 @@
         <input type="text" class="search-box" placeholder="搜索..." id="searchBox" oninput="filterContent()">
 
         <div class="toc" id="toc">
+            <div class="toc-item" onclick="scrollTo('guide')">📖 DevMac++ 使用指南</div>
+            <div class="toc-item" onclick="scrollTo('shortcuts')">⌨️ 快捷键</div>
+            <div class="toc-item" onclick="scrollTo('debugger')">🐛 调试器</div>
             <div class="toc-item" onclick="scrollTo('containers')">容器 (Containers)</div>
             <div class="toc-item" onclick="scrollTo('algorithms')">算法 (Algorithms)</div>
             <div class="toc-item" onclick="scrollTo('strings')">字符串 (Strings)</div>
@@ -103,6 +106,73 @@
         </div>
 
         <div id="content">
+
+            <section id="guide">
+                <h2>DevMac++ 使用指南</h2>
+
+                <div class="category-title">文件操作</div>
+                <p><strong>新建文件</strong>：点击工具栏 <code>doc</code> 图标或按 <code>Cmd+N</code>，在弹出的模板选择器中选择模板。</p>
+                <p><strong>保存模板</strong>：在模板选择器底部点击"将当前代码保存为模板..."，可将当前代码保存为自定义模板；内置模板不可删除，自定义模板右侧有 × 删除按钮。</p>
+                <p><strong>多窗口</strong>：每个窗口独立管理一个文件，编译器、调试器互不干扰。</p>
+
+                <div class="category-title">编译与运行</div>
+                <p><strong>编译</strong>：按 <code>Cmd+B</code> 或工具栏锤子按钮，编译日志显示在底部面板。</p>
+                <p><strong>运行</strong>：按 <code>Cmd+F9</code> 或工具栏橙色播放按钮，自动编译并运行。</p>
+                <p><strong>粘贴测试输入</strong>：程序运行后，将样例输入（含换行）粘贴进底部"运行"面板的多行输入框，点击"发送"即可一次性喂给程序，无需手动逐行输入。程序未到达读取语句时发送也有效，数据会缓存在管道里等待读取。</p>
+
+                <div class="category-title">查找与替换</div>
+                <p>按 <code>Cmd+F</code> 在编辑器内弹出查找框，支持大小写匹配。<code>Enter</code> / <code>Shift+Enter</code> 切换上下匹配项，<code>Escape</code> 关闭。</p>
+                <p>点击查找框左侧箭头展开替换输入框，支持替换当前和全部替换。</p>
+            </section>
+
+            <section id="shortcuts">
+                <h2>快捷键</h2>
+
+                <div class="category-title">文件</div>
+                <p><code>Cmd+N</code> — 新建（打开模板选择器）</p>
+                <p><code>Cmd+O</code> — 打开文件</p>
+                <p><code>Cmd+S</code> — 保存</p>
+                <p><code>Cmd+Shift+S</code> — 另存为</p>
+                <p><code>Cmd+W</code> — 关闭当前文件</p>
+
+                <div class="category-title">编辑</div>
+                <p><code>Cmd+Z</code> — 撤销 &nbsp;/&nbsp; <code>Cmd+Shift+Z</code> — 重做</p>
+                <p><code>Cmd+X / C / V</code> — 剪切 / 复制 / 粘贴</p>
+                <p><code>Cmd+A</code> — 全选</p>
+                <p><code>Cmd+F</code> — 查找 / 替换</p>
+
+                <div class="category-title">编译与运行</div>
+                <p><code>Cmd+F9</code> — 编译并运行</p>
+
+                <div class="category-title">调试</div>
+                <p><code>Cmd+F8</code> — 开始调试</p>
+                <p><code>Cmd+F2</code> — 停止调试</p>
+                <p><code>Cmd+F3</code> — 继续运行</p>
+                <p><code>Cmd+F10</code> — 单步跳过（Step Over）</p>
+                <p><code>Cmd+F11</code> — 单步进入（Step Into）</p>
+                <p><code>Cmd+Shift+F11</code> — 单步跳出（Step Out）</p>
+            </section>
+
+            <section id="debugger">
+                <h2>调试器</h2>
+
+                <div class="category-title">设置断点</div>
+                <p>在编辑器行号左侧单击即可切换断点（红色圆点）。可以在程序运行时设置断点，调试器会在程序下次暂停时批量应用。</p>
+
+                <div class="category-title">调试流程</div>
+                <p>1. 在需要的行设好断点，按 <code>Cmd+F8</code> 开始调试</p>
+                <p>2. 程序运行到断点时自动暂停，编辑器高亮当前行</p>
+                <p>3. 左侧侧边栏显示：<strong>监视变量</strong>（可添加任意表达式）、<strong>局部变量</strong>（当前作用域所有变量）、<strong>调用栈</strong></p>
+                <p>4. 使用单步快捷键逐行执行，按 <code>Cmd+F3</code> 继续运行到下一断点</p>
+
+                <div class="category-title">监视变量</div>
+                <p>在左侧"监视"面板点击 + 按钮，输入任意 C++ 表达式（变量名、<code>a[i]</code>、<code>a+b</code> 等）。每次暂停时自动求值更新，支持 vector、数组、结构体等复合类型。</p>
+
+                <div class="category-title">调试期间输入</div>
+                <p>程序需要 stdin 输入时，在底部"调试"面板的输入框中填写后按回车发送，再按"继续"让程序继续执行。</p>
+
+                <div class="note">调试器基于 LLDB。调试编译会自动加入 <code>-g -O0 -fno-inline</code> 选项，确保断点能正确定位到 struct/class 内联方法。</div>
+            </section>
             <section id="containers">
                 <h2>容器 (Containers)</h2>
                 <div class="category-title">序列容器</div>

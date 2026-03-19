@@ -15,34 +15,3 @@ struct WatchVariable: Identifiable, Hashable {
     var value: String = "..."
 }
 
-struct DebuggerState {
-    var isRunning: Bool = false
-    var isPaused: Bool = false
-    var currentLine: Int? = nil
-    var currentFile: String? = nil
-    var reason: String = ""
-}
-
-enum DebugCommand {
-    case start(executable: String)
-    case stop
-    case continue_
-    case stepInto
-    case stepOver
-    case stepOut
-    case setBreakpoint(line: Int, file: String)
-    case deleteBreakpoint(line: Int, file: String)
-    case addWatch(expression: String)
-    case removeWatch(expression: String)
-    case evaluate(expression: String)
-    case stackListFrames
-    case stackListLocals
-}
-
-enum GDBOutputType {
-    case result(dict: [String: Any])
-    case stream(type: String, content: String)
-    case async(type: String, data: [String: Any])
-    case done
-    case error(message: String)
-}

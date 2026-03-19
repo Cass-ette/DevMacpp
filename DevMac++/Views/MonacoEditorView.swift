@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import Combine
 
 struct MonacoEditorView: NSViewRepresentable {
     @EnvironmentObject var appState: AppState
@@ -13,7 +14,7 @@ struct MonacoEditorView: NSViewRepresentable {
         contentController.add(context.coordinator, name: "editorReady")
         contentController.add(context.coordinator, name: "contentChange")
         contentController.add(context.coordinator, name: "cursorChange")
-        contentController.add(context.coordinator, name: "breakpointToggle")
+        contentController.add(context.coordinator, name: "breakpointSync")
         config.userContentController = contentController
 
         // 配置
@@ -22,8 +23,9 @@ struct MonacoEditorView: NSViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.setValue(false, forKey: "drawsBackground")
 
-        // 保存 webView 引用到 coordinator
+        // 保存 webView 引用到 coordinator 和 appState（用于打印等）
         context.coordinator.webView = webView
+        appState.currentWebView = webView
 
         // 加载本地 HTML
         if let htmlPath = Bundle.main.path(forResource: "editor", ofType: "html", inDirectory: "monaco-editor") {
@@ -35,12 +37,9 @@ struct MonacoEditorView: NSViewRepresentable {
     }
 
     func updateNSView(_ webView: WKWebView, context: Context) {
-        // 同步调试状态
-        if let line = context.coordinator.debuggerService.currentLine {
-            context.coordinator.highlightDebugLine(line)
-        } else {
-            context.coordinator.highlightDebugLine(nil)
-        }
+        // 显式引用 debuggerService.currentLine，让 SwiftUI 追踪依赖
+        let line = debuggerService.currentLine
+        context.coordinator.setDebugLine(line)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -51,12 +50,47 @@ struct MonacoEditorView: NSViewRepresentable {
         let appState: AppState
         let debuggerService: DebuggerService
         weak var webView: WKWebView?
-        var currentDebugLine: Int? = nil
+        private var cancellables = Set<AnyCancellable>()
+        /// 记录上一次 JS 设定的内容，避免循环更新
+        private var lastJSContent: String = ""
 
         init(appState: AppState, debuggerService: DebuggerService) {
             self.appState = appState
             self.debuggerService = debuggerService
             super.init()
+
+            // 监听 currentLine 变化，直接更新 JS 调试行
+            debuggerService.$currentLine
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] line in
+                    self?.setDebugLine(line)
+                }
+                .store(in: &cancellables)
+
+            // 监听 fileContent 变化（Swift 端打开文件时），更新 Monaco
+            appState.$fileContent
+                .dropFirst()  // 忽略初始化时的值（由 editorReady 处理）
+                .removeDuplicates()
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] newContent in
+                    guard let self = self else { return }
+                    // lastJSContent 记录 Monaco 当前实际内容，避免无意义重复调用
+                    if newContent != self.lastJSContent {
+                        self.lastJSContent = newContent
+                        self.setContent(newContent)
+                    }
+                }
+                .store(in: &cancellables)
+
+            // 监听 showFindWidget 变化（打开查找 widget）
+            appState.$showFindWidget
+                .filter { $0 }
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in
+                    guard let self = self, let webView = self.webView else { return }
+                    webView.evaluateJavaScript("if (window.openFindWidget) window.openFindWidget();", completionHandler: nil)
+                }
+                .store(in: &cancellables)
         }
 
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
@@ -66,10 +100,14 @@ struct MonacoEditorView: NSViewRepresentable {
                 switch message.name {
                 case "editorReady":
                     self.appState.editorReady = true
+                    // 将当前内容同步到 Monaco（打开文件后编辑器刚加载时）
+                    self.lastJSContent = self.appState.fileContent
+                    self.setContent(self.appState.fileContent)
                     self.syncBreakpoints()
 
                 case "contentChange":
                     if let content = body["content"] as? String {
+                        self.lastJSContent = content
                         self.appState.fileContent = content
                         self.appState.isModified = true
                         self.appState.fileSize = content.utf8.count
@@ -89,9 +127,9 @@ struct MonacoEditorView: NSViewRepresentable {
                         self.appState.cursorPosition.column = column
                     }
 
-                case "breakpointToggle":
-                    if let line = body["line"] as? Int {
-                        self.toggleBreakpoint(line: line)
+                case "breakpointSync":
+                    if let lines = body["lines"] as? [Int] {
+                        self.syncBreakpointsFromJS(lines: Set(lines))
                     }
 
                 default:
@@ -100,99 +138,58 @@ struct MonacoEditorView: NSViewRepresentable {
             }
         }
 
-        private func toggleBreakpoint(line: Int) {
-            let wasRemoved: Bool
-            if self.appState.breakpoints.contains(line) {
-                self.appState.breakpoints.remove(line)
-                wasRemoved = true
-            } else {
-                self.appState.breakpoints.insert(line)
-                wasRemoved = false
-            }
-            self.syncBreakpoints()
+        /// JS 通知完整断点列表 → 更新 Swift 状态
+        private func syncBreakpointsFromJS(lines: Set<Int>) {
+            let oldSet = self.appState.breakpoints
+            self.appState.breakpoints = lines
 
-            // 同步到 LLDB
-            if self.debuggerService.isDebugging, let file = self.appState.currentFilePath {
-                Task { @MainActor in
-                    if wasRemoved {
-                        await self.debuggerService.removeBreakpoint(line: line, file: file)
-                    } else {
-                        // LLDB 断点通过行号设置
-                        _ = await self.sendLLDBCommand("breakpoint set --file '\(file)' --line \(line)")
+            if self.debuggerService.isDebugging {
+                let added = lines.subtracting(oldSet)
+                let removed = oldSet.subtracting(lines)
+
+                for line in added {
+                    self.debuggerService.queueBreakpointChange(line: line, add: true)
+                }
+                for line in removed {
+                    self.debuggerService.queueBreakpointChange(line: line, add: false)
+                }
+
+                // 如果程序已暂停，立即应用（不用等下次 stop）
+                if self.debuggerService.isPaused {
+                    Task { @MainActor in
+                        await self.debuggerService.applyPendingBreakpointChangesNow()
                     }
                 }
             }
         }
 
-        private func sendLLDBCommand(_ cmd: String) async -> String {
-            await debuggerService.sendRawCommand(cmd)
-        }
-
+        /// 恢复断点装饰（editorReady 时从 appState 恢复）
         func syncBreakpoints() {
             guard let webView = self.webView, self.appState.editorReady else { return }
+            let lines = self.appState.breakpoints.sorted()
+            let linesJson = "[\(lines.map { String($0) }.joined(separator: ","))]"
+            let js = "window.setBreakpoints(\(linesJson), null);"
+            webView.evaluateJavaScript(js, completionHandler: nil)
+        }
 
-            // 构建断点装饰器数组
-            let decorations = self.appState.breakpoints.map { lineNum -> String in
-                return """
-                {
-                    range: new monaco.Range(\(lineNum), 1, \(lineNum), 1),
-                    options: {
-                        isWholeLine: true,
-                        className: 'breakpoint-line',
-                        glyphMarginClassName: 'breakpoint-glyph'
-                    }
-                }
-                """
-            }.joined(separator: ",\n")
-
-            let js = """
-            if (window.editor) {
-                window.editor.deltaDecorations([], [\(decorations)]);
+        /// 设置调试行（不影响断点）
+        func setDebugLine(_ line: Int?) {
+            guard let webView = self.webView, self.appState.editorReady else { return }
+            let js: String
+            if let line = line {
+                js = "window.setDebugLine(\(line));"
+            } else {
+                js = "window.setDebugLine(null);"
             }
-            """
-
             webView.evaluateJavaScript(js, completionHandler: nil)
         }
 
         func setContent(_ content: String) {
             guard let webView = self.webView else { return }
-            // 转义特殊字符
-            let escaped = content
-                .replacingOccurrences(of: "\\", with: "\\\\")
-                .replacingOccurrences(of: "'", with: "\\'")
-                .replacingOccurrences(of: "\n", with: "\\n")
-                .replacingOccurrences(of: "\r", with: "\\r")
-            webView.evaluateJavaScript("if (window.editor) window.editor.setValue('\(escaped)');", completionHandler: nil)
-        }
-
-        func highlightDebugLine(_ line: Int?) {
-            guard let webView = self.webView else { return }
-
-            let removeJs = """
-            if (window.debugLineDecoration) {
-                window.editor.deltaDecorations([window.debugLineDecoration], []);
-                window.debugLineDecoration = null;
-            }
-            """
-            webView.evaluateJavaScript(removeJs, completionHandler: nil)
-
-            currentDebugLine = line
-
-            if let line = line {
-                let js = """
-                if (window.editor) {
-                    window.debugLineDecoration = window.editor.deltaDecorations([], [{
-                        range: new monaco.Range(\(line), 1, \(line), 1),
-                        options: {
-                            isWholeLine: true,
-                            className: 'debug-line',
-                            glyphMarginClassName: 'debug-glyph'
-                        }
-                    }]);
-                    window.editor.revealLineInCenter(\(line));
-                }
-                """
-                webView.evaluateJavaScript(js, completionHandler: nil)
+            // fragmentsAllowed 允许裸字符串序列化为 JSON 字符串字面量，安全传递任意内容
+            if let jsonData = try? JSONSerialization.data(withJSONObject: content, options: .fragmentsAllowed),
+               let jsonStr = String(data: jsonData, encoding: .utf8) {
+                webView.evaluateJavaScript("if (window.setContent) window.setContent(\(jsonStr));", completionHandler: nil)
             }
         }
 

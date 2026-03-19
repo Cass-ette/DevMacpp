@@ -22,13 +22,6 @@ class CompilerService: ObservableObject {
         return "/usr/bin/g++"
     }
 
-    var gdbPath: String {
-        if FileManager.default.fileExists(atPath: "/opt/homebrew/bin/gdb") {
-            return "/opt/homebrew/bin/gdb"
-        }
-        return "gdb"
-    }
-
     @MainActor
     func compile(filePath: String, withDebug: Bool = false, options: CompilerOptions = CompilerOptions()) async throws -> CompileResult {
         isCompiling = true
@@ -37,7 +30,7 @@ class CompilerService: ObservableObject {
         let outputPath = (filePath as NSString).deletingPathExtension + "_run"
         var args = options.toArguments()
         if withDebug {
-            args.append("-g")
+            args.append(contentsOf: ["-g", "-O0", "-fno-inline"])
         }
         args.append(contentsOf: ["-o", outputPath, filePath])
 
@@ -74,6 +67,22 @@ class CompilerService: ObservableObject {
     @MainActor
     func compileForDebug(filePath: String) async throws -> CompileResult {
         return try await compile(filePath: filePath, withDebug: true)
+    }
+
+    /// 清理：删除当前源文件对应的可执行文件
+    @MainActor
+    func clean(filePath: String) -> String {
+        let exePath = (filePath as NSString).deletingPathExtension + "_run"
+        let fm = FileManager.default
+        if fm.fileExists(atPath: exePath) {
+            do {
+                try fm.removeItem(atPath: exePath)
+                return "已清理: \(exePath)"
+            } catch {
+                return "清理失败: \(error.localizedDescription)"
+            }
+        }
+        return "无编译产物可清理"
     }
 
     private func runProcess(executable: String, arguments: [String]) async throws -> (output: String, returnCode: Int32) {
@@ -125,11 +134,15 @@ class CompilerService: ObservableObject {
         for line in lines {
             if line.contains("error:") {
                 let range = NSRange(line.startIndex..., in: line)
-                if let match = regex.firstMatch(in: line, options: [], range: range) {
-                    let file = String(line[Range(match.range(at: 1), in: line)!])
-                    let lineNum = Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                    let column = Int(line[Range(match.range(at: 3), in: line)!]) ?? 0
-                    let message = String(line[Range(match.range(at: 4), in: line)!])
+                if let match = regex.firstMatch(in: line, options: [], range: range),
+                   let fileRange = Range(match.range(at: 1), in: line),
+                   let lineRange = Range(match.range(at: 2), in: line),
+                   let colRange = Range(match.range(at: 3), in: line),
+                   let msgRange = Range(match.range(at: 4), in: line) {
+                    let file = String(line[fileRange])
+                    let lineNum = Int(line[lineRange]) ?? 0
+                    let column = Int(line[colRange]) ?? 0
+                    let message = String(line[msgRange])
                     errors.append(CompileError(file: file, line: lineNum, column: column, message: message))
                 }
             }

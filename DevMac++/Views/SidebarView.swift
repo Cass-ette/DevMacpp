@@ -2,11 +2,12 @@ import SwiftUI
 
 struct SidebarView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var debuggerService: DebuggerService
 
     var body: some View {
         VStack(spacing: 0) {
             // 标签切换
-            if appState.isDebugging {
+            if debuggerService.isDebugging {
                 DebugSidebarView()
             } else {
                 ProjectSidebarView()
@@ -55,25 +56,34 @@ struct ProjectSidebarView: View {
 struct ProjectTreeView: View {
     @EnvironmentObject var appState: AppState
 
+    var projectName: String {
+        if let path = appState.currentFilePath {
+            return (path as NSString).deletingLastPathComponent.components(separatedBy: "/").last ?? "项目"
+        }
+        return "未命名项目"
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: 4) {
                 Image(systemName: "folder")
                     .font(.system(size: 12))
                     .foregroundColor(Color(hex: "#cccccc"))
-                Text("未命名项目")
+                Text(projectName)
                     .font(.system(size: 12))
                     .foregroundColor(Color(hex: "#cccccc"))
             }
 
-            HStack(spacing: 4) {
-                Spacer().frame(width: 12)
-                Image(systemName: "doc.text")
-                    .font(.system(size: 12))
-                    .foregroundColor(Color(hex: "#cccccc"))
-                Text(appState.currentFileName)
-                    .font(.system(size: 12))
-                    .foregroundColor(Color(hex: "#cccccc"))
+            if appState.currentFileName != "未保存.cpp" || appState.isModified {
+                HStack(spacing: 4) {
+                    Spacer().frame(width: 12)
+                    Image(systemName: "doc.text")
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(hex: "#cccccc"))
+                    Text(appState.currentFileName)
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(hex: "#cccccc"))
+                }
             }
         }
     }

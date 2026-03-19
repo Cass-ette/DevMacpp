@@ -5,7 +5,6 @@ enum BottomTab: String, CaseIterable {
     case compileResult = "编译结果"
     case runtime = "运行"
     case debug = "调试"
-    case findResults = "查找结果"
 }
 
 enum SidebarTab: String, CaseIterable {

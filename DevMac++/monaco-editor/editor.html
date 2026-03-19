@@ -201,7 +201,9 @@
             });
 
             // 监听内容变化
+            window._syncingFromSwift = false;
             window.editor.onDidChangeModelContent(() => {
+                if (window._syncingFromSwift) return; // Swift 设定的内容，忽略回调
                 const content = window.editor.getValue();
                 window.webkit.messageHandlers.contentChange.postMessage({
                     content: content,
@@ -218,17 +220,113 @@
                 });
             });
 
-            // 监听点击断点区域（行号左边距）
+            // === 断点管理（JS 维护装饰，Swift 被动接收通知）===
+
+            // 内部状态
+            window._bpLines = [];           // 断点行号数组
+            window._bpDecoIds = [];        // 断点装饰 ID
+            window._debugLine = null;       // 当前调试行
+            window._debugDecoIds = [];     // 调试行装饰 ID
+            window._syncingBreakpoints = false; // 防止 Swift 同步触发回调
+
+            // 点击 glyph margin 切换断点
             window.editor.onMouseDown((e) => {
-                if (e.target.type === 2) { // glyphMargin
-                    const lineNumber = e.target.position?.lineNumber;
-                    if (lineNumber) {
-                        window.webkit.messageHandlers.breakpointToggle.postMessage({
-                            line: lineNumber
-                        });
-                    }
+                if (e.target.type !== 2) return; // 仅 glyphMargin 区域
+                const line = e.target.position?.lineNumber;
+                if (!line) return;
+
+                const idx = window._bpLines.indexOf(line);
+                if (idx >= 0) {
+                    // 已有断点 → 删除
+                    const oldId = window._bpDecoIds[idx];
+                    window._bpLines.splice(idx, 1);
+                    window._bpDecoIds.splice(idx, 1);
+                    if (oldId) window.editor.deltaDecorations([oldId], []);
+                    const sorted = [...window._bpLines].sort((a, b) => a - b);
+                    window.webkit.messageHandlers.breakpointSync.postMessage({ lines: sorted });
+                } else {
+                    // 无断点 → 添加
+                    const newDeco = window.editor.deltaDecorations([], [{
+                        range: new monaco.Range(line, 1, line, 1),
+                        options: {
+                            isWholeLine: true,
+                            className: 'breakpoint-line',
+                            glyphMarginClassName: 'breakpoint-glyph'
+                        }
+                    }]);
+                    window._bpLines.push(line);
+                    window._bpDecoIds.push(newDeco[0] || null);
+                    const sorted = [...window._bpLines].sort((a, b) => a - b);
+                    window.webkit.messageHandlers.breakpointSync.postMessage({ lines: sorted });
                 }
             });
+
+            // 监听内容变化（用于过滤粘贴操作）
+            let _lastModelVersion = 0;
+            window.editor.onDidChangeModelContent((e) => {
+                _lastModelVersion = window.editor.getModel()?.getVersionId() || 0;
+            });
+
+            // 外部调用：设置所有断点 + 调试行（Swift 用）
+            window.setBreakpoints = function(breakpointLines, debugLine) {
+                window._syncingBreakpoints = true;
+                // 1. 清除所有旧断点
+                const allOldIds = window._bpDecoIds.filter(id => id);
+                if (allOldIds.length > 0) window.editor.deltaDecorations(allOldIds, []);
+                window._bpLines = [];
+                window._bpDecoIds = [];
+
+                // 2. 添加断点
+                if (breakpointLines && breakpointLines.length > 0) {
+                    const decos = breakpointLines.map(ln => ({
+                        range: new monaco.Range(ln, 1, ln, 1),
+                        options: { isWholeLine: true, className: 'breakpoint-line', glyphMarginClassName: 'breakpoint-glyph' }
+                    }));
+                    const ids = window.editor.deltaDecorations([], decos);
+                    window._bpLines = [...breakpointLines];
+                    window._bpDecoIds = ids;
+                }
+
+                // 3. 调试行
+                if (window._debugDecoIds.length > 0) window.editor.deltaDecorations(window._debugDecoIds, []);
+                window._debugLine = debugLine || null;
+                window._debugDecoIds = [];
+                if (debugLine) {
+                    const ids = window.editor.deltaDecorations([], [{
+                        range: new monaco.Range(debugLine, 1, debugLine, 1),
+                        options: { isWholeLine: true, className: 'debug-line', glyphMarginClassName: 'debug-glyph' }
+                    }]);
+                    window._debugDecoIds = ids;
+                    window.editor.revealLineInCenter(debugLine);
+                }
+                window._syncingBreakpoints = false;
+            };
+
+            // 外部调用：只更新调试行
+            window.setDebugLine = function(line) {
+                if (window._debugDecoIds.length > 0) window.editor.deltaDecorations(window._debugDecoIds, []);
+                window._debugLine = line || null;
+                window._debugDecoIds = [];
+                if (line) {
+                    const ids = window.editor.deltaDecorations([], [{
+                        range: new monaco.Range(line, 1, line, 1),
+                        options: { isWholeLine: true, className: 'debug-line', glyphMarginClassName: 'debug-glyph' }
+                    }]);
+                    window._debugDecoIds = ids;
+                    window.editor.revealLineInCenter(line);
+                }
+            };
+
+            // 外部调用：设置编辑器内容（用于打开文件）
+            window.setContent = function(content) {
+                window._syncingFromSwift = true;
+                window.editor.setValue(content || '');
+                window._syncingFromSwift = false;
+            };
+
+            // 外部调用：打开/关闭查找 widget
+            window.openFindWidget = function() { openFindWidget(); };
+            window.closeFindWidget = function() { closeFindWidget(); };
 
             // ===== Find / Replace Widget =====
             const findWidget = document.getElementById('find-widget');

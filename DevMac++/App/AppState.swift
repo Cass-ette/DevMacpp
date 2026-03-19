@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import WebKit
 
 struct CursorPosition {
     var line: Int = 1
@@ -28,7 +29,6 @@ class AppState: ObservableObject {
     @Published var lastCompiledWithDebug: Bool = false
 
     // 调试状态
-    @Published var isDebugging: Bool = false
     @Published var breakpoints: Set<Int> = []
     @Published var currentDebugLine: Int? = nil
     @Published var watchVariables: [String] = []
@@ -41,4 +41,7 @@ class AppState: ObservableObject {
     @Published var sidebarWidth: CGFloat = 200
     @Published var bottomPanelHeight: CGFloat = 150
     @Published var showTemplatePicker: Bool = false
+    @Published var showFindWidget: Bool = false
+    /// 当前 WebView 引用（用于打印等操作，weak 避免循环引用）
+    weak var currentWebView: WKWebView?
 }

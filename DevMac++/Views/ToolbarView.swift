@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import WebKit
 
 struct ToolbarView: View {
     @EnvironmentObject var appState: AppState
@@ -25,27 +26,57 @@ struct ToolbarView: View {
                 ToolbarButton(icon: "square.and.arrow.down.on.square", tooltip: "另存为") {
                     fileService.saveAs(appState: appState)
                 }
-                ToolbarButton(icon: "xmark", tooltip: "关闭 (Cmd+W)") {}
+                ToolbarButton(icon: "xmark", tooltip: "关闭 (Cmd+W)") {
+                    fileService.newFile(appState: appState)
+                }
 
                 ToolbarDivider()
 
-                ToolbarButton(icon: "printer", tooltip: "打印") {}
+                ToolbarButton(icon: "printer", tooltip: "打印") {
+                    if let webView = appState.currentWebView {
+                        let printInfo = NSPrintInfo.shared
+                        printInfo.horizontalPagination = .fit
+                        printInfo.verticalPagination = .automatic
+                        let printOp = NSPrintOperation(view: webView, printInfo: printInfo)
+                        printOp.run()
+                    }
+                }
 
                 ToolbarDivider()
 
-                ToolbarButton(icon: "scissors", tooltip: "剪切 (Cmd+X)") {}
-                ToolbarButton(icon: "doc.on.doc", tooltip: "复制 (Cmd+C)") {}
-                ToolbarButton(icon: "doc.on.clipboard", tooltip: "粘贴 (Cmd+V)") {}
+                ToolbarButton(icon: "scissors", tooltip: "剪切 (Cmd+X)") {
+                    NSApp.sendAction(Selector(("cut:")), to: nil, from: nil)
+                }
+                ToolbarButton(icon: "doc.on.doc", tooltip: "复制 (Cmd+C)") {
+                    NSApp.sendAction(Selector(("copy:")), to: nil, from: nil)
+                }
+                ToolbarButton(icon: "doc.on.clipboard", tooltip: "粘贴 (Cmd+V)") {
+                    NSApp.sendAction(Selector(("paste:")), to: nil, from: nil)
+                }
 
                 ToolbarDivider()
 
-                ToolbarButton(icon: "arrow.uturn.backward", tooltip: "撤销 (Cmd+Z)") {}
-                ToolbarButton(icon: "arrow.uturn.forward", tooltip: "重做 (Cmd+Shift+Z)") {}
+                ToolbarButton(icon: "arrow.uturn.backward", tooltip: "撤销 (Cmd+Z)") {
+                    NSApp.sendAction(Selector(("undo:")), to: nil, from: nil)
+                }
+                ToolbarButton(icon: "arrow.uturn.forward", tooltip: "重做 (Cmd+Shift+Z)") {
+                    NSApp.sendAction(Selector(("redo:")), to: nil, from: nil)
+                }
 
                 ToolbarDivider()
 
-                ToolbarButton(icon: "magnifyingglass", tooltip: "查找 (Cmd+F)") {}
-                ToolbarButton(icon: "arrow.left.arrow.right", tooltip: "替换 (Cmd+H)") {}
+                ToolbarButton(icon: "magnifyingglass", tooltip: "查找 (Cmd+F)") {
+                    appState.showFindWidget = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        appState.showFindWidget = false
+                    }
+                }
+                ToolbarButton(icon: "arrow.left.arrow.right", tooltip: "替换 (Cmd+H)") {
+                    appState.showFindWidget = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        appState.showFindWidget = false
+                    }
+                }
 
                 Spacer()
             }
@@ -57,7 +88,7 @@ struct ToolbarView: View {
 
             // 第二行：编译 + 调试操作
             HStack(spacing: 2) {
-                ToolbarButton(icon: "hammer", tooltip: "编译 (Cmd+F11)") {
+                ToolbarButton(icon: "hammer", tooltip: "编译") {
                     Task { @MainActor in
                         if appState.currentFilePath == nil {
                             fileService.saveFile(appState: appState)
@@ -73,7 +104,7 @@ struct ToolbarView: View {
                         }
                     }
                 }
-                ToolbarButton(icon: "play", tooltip: "运行 (Cmd+F10)", tint: Color(hex: "#4caf50")) {
+                ToolbarButton(icon: "play", tooltip: "运行", tint: Color(hex: "#4caf50")) {
                     Task { @MainActor in
                         if appState.currentFilePath == nil {
                             fileService.saveFile(appState: appState)
@@ -98,20 +129,37 @@ struct ToolbarView: View {
                 ToolbarButton(icon: "play.fill", tooltip: "编译运行 (Cmd+F9)", tint: Color(hex: "#ff9800")) {
                     Task { await compileAndRun() }
                 }
-                ToolbarButton(icon: "arrow.clockwise", tooltip: "重新编译") {}
-                ToolbarButton(icon: "trash", tooltip: "清理") {}
+                ToolbarButton(icon: "arrow.clockwise", tooltip: "重新编译") {
+                    Task { @MainActor in
+                        fileService.saveFile(appState: appState)
+                        if let path = appState.currentFilePath {
+                            appState.compileLog = "正在编译...\n"
+                            appState.selectedBottomTab = .compileLog
+                            let result = try? await compilerService.compileOnly(filePath: path)
+                            appState.compileSuccess = result?.success ?? false
+                            appState.compileErrors = result?.errors ?? []
+                            appState.compileLog = result?.output ?? ""
+                        }
+                    }
+                }
+                ToolbarButton(icon: "trash", tooltip: "清理") {
+                    if let path = appState.currentFilePath {
+                        let msg = compilerService.clean(filePath: path)
+                        appState.compileLog = msg
+                        appState.selectedBottomTab = .compileLog
+                    }
+                }
 
                 ToolbarDivider()
 
                 ToolbarButton(icon: "ant", tooltip: "调试 (Cmd+F8)", tint: Color(hex: "#2196f3")) {
                     Task { await startDebug() }
                 }
-                ToolbarButton(icon: "pause", tooltip: "继续运行") {
+                ToolbarButton(icon: "pause", tooltip: "继续运行 (Cmd+F3)") {
                     Task { await debuggerService.continue_() }
                 }
                 ToolbarButton(icon: "stop", tooltip: "停止 (Cmd+F2)") {
                     debuggerService.stopDebug()
-                    appState.isDebugging = false
                 }
                 ToolbarButton(icon: "arrow.down.to.line", tooltip: "单步进入 (Cmd+F11)") {
                     Task { await debuggerService.stepInto() }
@@ -184,7 +232,6 @@ struct ToolbarView: View {
                     sourceFile: path,
                     breakpoints: appState.breakpoints
                 )
-                appState.isDebugging = true
                 appState.selectedBottomTab = .debug
             }
         } catch {
@@ -202,6 +249,7 @@ struct ToolbarButton: View {
     let action: () -> Void
 
     @State private var isHovered = false
+    @State private var showTooltip = false
 
     var body: some View {
         Button(action: action) {
@@ -213,10 +261,54 @@ struct ToolbarButton: View {
                 .cornerRadius(4)
         }
         .buttonStyle(.plain)
-        .help(tooltip)
+        .overlay(alignment: .bottom) {
+            if showTooltip {
+                tooltipView
+                    .offset(y: 28)
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+            }
+        }
         .onHover { hovering in
             isHovered = hovering
+            if hovering {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    if isHovered {
+                        withAnimation(.easeIn(duration: 0.1)) { showTooltip = true }
+                    }
+                }
+            } else {
+                withAnimation(.easeOut(duration: 0.08)) { showTooltip = false }
+            }
         }
+    }
+
+    private var tooltipView: some View {
+        // 将 "名称 (快捷键)" 拆成两行显示
+        let parts = tooltip.components(separatedBy: " (")
+        let name = parts[0]
+        let shortcut = parts.count > 1 ? String(parts[1].dropLast()) : nil
+
+        return VStack(alignment: .leading, spacing: 1) {
+            Text(name)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(Color(hex: "#cccccc"))
+            if let sc = shortcut {
+                Text(sc)
+                    .font(.system(size: 10))
+                    .foregroundColor(Color(hex: "#858585"))
+            }
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 5)
+        .background(Color(hex: "#2d2d30"))
+        .cornerRadius(5)
+        .overlay(
+            RoundedRectangle(cornerRadius: 5)
+                .strokeBorder(Color(hex: "#454545"), lineWidth: 0.5)
+        )
+        .shadow(color: .black.opacity(0.45), radius: 4, y: 2)
+        .fixedSize()
     }
 }
 

@@ -1,12 +1,13 @@
 import SwiftUI
 import AppKit
 
-struct AppMenuCommands: Commands {
-    @EnvironmentObject var appState: AppState
-    @EnvironmentObject var fileService: FileService
-    @EnvironmentObject var compilerService: CompilerService
-    @EnvironmentObject var debuggerService: DebuggerService
-    @EnvironmentObject var runtimeService: RuntimeService
+/// 每窗口独立的菜单命令
+struct WindowCommands: Commands {
+    @ObservedObject var appState: AppState
+    @ObservedObject var fileService: FileService
+    @ObservedObject var compilerService: CompilerService
+    @ObservedObject var debuggerService: DebuggerService
+    @ObservedObject var runtimeService: RuntimeService
 
     var body: some Commands {
         CommandMenu("文件") {
@@ -78,32 +79,53 @@ struct AppMenuCommands: Commands {
 
         CommandMenu("执行") {
             Button("编译") {
-                Task { await compileOnly() }
+                Task { @MainActor in await compileOnly() }
             }
-            .keyboardShortcut("\u{F70B}", modifiers: .command) // Cmd+F11
-
-            Button("运行") {
-                Task { await runOnly() }
-            }
-            .keyboardShortcut("\u{F70A}", modifiers: .command) // Cmd+F10
 
             Button("编译运行") {
-                Task { await compileAndRun() }
+                Task { @MainActor in await compileAndRun() }
             }
             .keyboardShortcut("\u{F709}", modifiers: .command) // Cmd+F9
 
             Divider()
 
             Button("调试") {
-                Task { await startDebug() }
+                Task { @MainActor in await startDebug() }
             }
             .keyboardShortcut("\u{F708}", modifiers: .command) // Cmd+F8
+            .disabled(debuggerService.isDebugging)
 
             Button("停止调试") {
                 debuggerService.stopDebug()
-                appState.isDebugging = false
             }
             .keyboardShortcut("\u{F702}", modifiers: .command) // Cmd+F2
+            .disabled(!debuggerService.isDebugging)
+
+            Divider()
+
+            Button("继续运行") {
+                Task { @MainActor in await debuggerService.continue_() }
+            }
+            .keyboardShortcut("\u{F703}", modifiers: .command) // Cmd+F3
+            .disabled(!debuggerService.isPaused)
+
+            Button("单步跳过") {
+                Task { @MainActor in await debuggerService.stepOver() }
+            }
+            .keyboardShortcut("\u{F70A}", modifiers: .command) // Cmd+F10
+            .disabled(!debuggerService.isPaused)
+
+            Button("单步进入") {
+                Task { @MainActor in await debuggerService.stepInto() }
+            }
+            .keyboardShortcut("\u{F70B}", modifiers: .command) // Cmd+F11
+            .disabled(!debuggerService.isPaused)
+
+            Button("单步跳出") {
+                Task { @MainActor in await debuggerService.stepOut() }
+            }
+            .keyboardShortcut("\u{F70B}", modifiers: [.command, .shift]) // Cmd+Shift+F11
+            .disabled(!debuggerService.isPaused)
         }
 
         CommandMenu("帮助") {
@@ -209,7 +231,6 @@ struct AppMenuCommands: Commands {
                     sourceFile: path,
                     breakpoints: appState.breakpoints
                 )
-                appState.isDebugging = true
                 appState.selectedBottomTab = .debug
             }
         } catch {

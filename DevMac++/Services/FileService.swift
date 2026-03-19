@@ -7,11 +7,13 @@ class FileService: ObservableObject {
     @Published var currentFilePath: String?
 
     func newFile(appState: AppState) {
+        currentFilePath = nil
         appState.currentFilePath = nil
         appState.currentFileName = "未保存.cpp"
         appState.fileContent = ""
         appState.isModified = false
         appState.fileSize = 0
+        appState.breakpoints = []
     }
 
     func openFile(appState: AppState) {
@@ -65,6 +67,7 @@ class FileService: ObservableObject {
             let name = (path as NSString).lastPathComponent
             appState.currentFileName = name
             appState.currentFilePath = path
+            currentFilePath = path
         } catch {
             print("Failed to save file: \(error)")
         }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FileTabBarView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var fileService: FileService
 
     var body: some View {
         HStack(spacing: 0) {
@@ -9,7 +10,7 @@ struct FileTabBarView: View {
                 fileName: appState.currentFileName,
                 isModified: appState.isModified
             ) {
-                // 关闭文件（Plan 2 实现）
+                fileService.newFile(appState: appState)
             }
             Spacer()
         }

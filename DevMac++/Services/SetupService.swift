@@ -2,8 +2,7 @@ import Foundation
 
 class SetupService: ObservableObject {
     @Published var gccInstalled = false
-    @Published var gdbInstalled = false
-    @Published var gdbSigned = false
+    @Published var lldbInstalled = false
     @Published var showSetupGuide = false
 
     init() {
@@ -12,17 +11,10 @@ class SetupService: ObservableObject {
 
     func checkEnvironment() {
         gccInstalled = checkCommand("g++")
-        gdbInstalled = checkCommand("gdb")
+        // LLDB 随 Xcode Command Line Tools 一起安装，检查 /usr/bin/lldb
+        lldbInstalled = FileManager.default.fileExists(atPath: "/usr/bin/lldb")
 
-        if gdbInstalled {
-            let result = runCommand("/usr/bin/which", args: ["gdb"])
-            if !result.isEmpty {
-                let signResult = runCommand("/usr/bin/codesign", args: ["-dv", result])
-                gdbSigned = signResult.contains("valid")
-            }
-        }
-
-        if !gccInstalled || !gdbInstalled || !gdbSigned {
+        if !gccInstalled || !lldbInstalled {
             showSetupGuide = true
         }
     }

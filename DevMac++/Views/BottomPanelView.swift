@@ -34,8 +34,6 @@ struct BottomPanelView: View {
                     RuntimeConsoleView()
                 case .debug:
                     DebugOutputView()
-                case .findResults:
-                    FindResultsView()
                 }
             }
         }
@@ -50,9 +48,10 @@ struct CompileLogView: View {
             ScrollView {
                 Text(appState.compileLog.isEmpty ? "就绪" : appState.compileLog)
                     .font(.system(size: 11, design: .monospaced))
-                    .foregroundColor(Color(hex: "#cccccc"))
+                    .foregroundColor(appState.compileLog.isEmpty ? Color(hex: "#858585") : Color(hex: "#cccccc"))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(8)
+                    .textSelection(.enabled)
                     .id("compileLog")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -98,6 +97,7 @@ struct CompileResultView: View {
             }
             .padding(8)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .textSelection(.enabled)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(hex: "#252526"))
@@ -169,67 +169,112 @@ struct RuntimeConsoleView: View {
             .padding(.vertical, 6)
             .background(Color(hex: "#2d2d30"))
 
-            // 输入区域
-            HStack(spacing: 8) {
-                Text(">")
+            // 多行输入区域（支持粘贴样例）
+            HStack(alignment: .bottom, spacing: 0) {
+                TextEditor(text: $inputText)
                     .font(.system(size: 12, design: .monospaced))
-                    .foregroundColor(Color(hex: "#4caf50"))
-
-                TextField("输入后按回车发送", text: $inputText)
-                    .font(.system(size: 12, design: .monospaced))
-                    .textFieldStyle(.plain)
                     .foregroundColor(.white)
-                    .onSubmit {
-                        sendInput()
-                    }
+                    .scrollContentBackground(.hidden)
+                    .background(Color.clear)
+                    .frame(height: 64)
                     .disabled(!runtimeService.isRunning)
+
+                Button("发送") {
+                    sendInput()
+                }
+                .font(.system(size: 11))
+                .buttonStyle(.plain)
+                .foregroundColor(runtimeService.isRunning && !inputText.isEmpty ? Color(hex: "#4caf50") : Color(hex: "#555555"))
+                .padding(.horizontal, 10)
+                .padding(.bottom, 10)
+                .disabled(!runtimeService.isRunning || inputText.isEmpty)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color(hex: "#252526"))
+            .padding(.horizontal, 8)
+            .background(Color(hex: "#1a1a1a"))
+            .overlay(
+                Rectangle()
+                    .fill(Color(hex: "#3e3e42"))
+                    .frame(height: 1),
+                alignment: .top
+            )
         }
     }
 
     private func sendInput() {
         guard !inputText.isEmpty else { return }
-        runtimeService.sendLine(inputText)
+        runtimeService.sendAll(inputText)
         inputText = ""
     }
 }
 
 struct DebugOutputView: View {
     @EnvironmentObject var debuggerService: DebuggerService
+    @State private var inputText: String = ""
+    @State private var isSending: Bool = false  // 防止重复发送
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                Text(debuggerService.debugOutput.isEmpty ? "调试输出将显示在这里" : debuggerService.debugOutput)
-                    .font(.system(size: 11, design: .monospaced))
-                    .foregroundColor(debuggerService.debugOutput.isEmpty ? Color(hex: "#858585") : Color(hex: "#cccccc"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(8)
-                    .textSelection(.enabled)
-                    .id("debugOutput")
+        VStack(spacing: 0) {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    Text(debuggerService.debugOutput.isEmpty ? "调试输出将显示在这里" : debuggerService.debugOutput)
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundColor(debuggerService.debugOutput.isEmpty ? Color(hex: "#858585") : Color(hex: "#cccccc"))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(8)
+                        .textSelection(.enabled)
+                        .id("debugOutput")
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(hex: "#252526"))
+                .onChange(of: debuggerService.debugOutput) { _ in
+                    withAnimation { proxy.scrollTo("debugOutput", anchor: .bottom) }
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(hex: "#252526"))
-            .onChange(of: debuggerService.debugOutput) { _ in
-                withAnimation { proxy.scrollTo("debugOutput", anchor: .bottom) }
+
+            // 调试期间始终显示输入框
+            if debuggerService.isDebugging {
+                HStack(spacing: 6) {
+                    Text("stdin:")
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundColor(Color(hex: "#4caf50"))
+                    TextField("输入后回车发送", text: $inputText)
+                        .font(.system(size: 11, design: .monospaced))
+                        .textFieldStyle(.plain)
+                        .foregroundColor(.white)
+                        .onSubmit {
+                            guard !inputText.isEmpty, !isSending else { return }
+                            let text = inputText
+                            inputText = ""
+                            isSending = true
+                            // 按换行拆分，每行单独发送（最后一行的 autoContinue 由用户按继续按钮触发）
+                            let lines = text.components(separatedBy: .newlines).filter { !$0.isEmpty }
+                            Task {
+                                for (i, line) in lines.enumerated() {
+                                    debuggerService.sendInput(line, autoContinue: false)
+                                    if i < lines.count - 1 {
+                                        try? await Task.sleep(nanoseconds: 50_000_000)
+                                    }
+                                }
+                                isSending = false
+                            }
+                        }
+                    Button("继续") {
+                        Task {
+                            await debuggerService.continue_()
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .disabled(!debuggerService.isDebugging)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color(hex: "#2d2d30"))
             }
         }
     }
 }
 
-struct FindResultsView: View {
-    var body: some View {
-        Text("查找结果将显示在这里")
-            .font(.system(size: 11, design: .monospaced))
-            .foregroundColor(Color(hex: "#858585"))
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .padding(8)
-            .background(Color(hex: "#252526"))
-    }
-}
 
 struct BottomTabButton: View {
     let title: String

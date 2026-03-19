@@ -80,6 +80,13 @@ class RuntimeService: ObservableObject {
         input.write(data)
     }
 
+    func sendAll(_ text: String) {
+        guard isRunning, let input = inputHandle else { return }
+        let toSend = text.hasSuffix("\n") ? text : text + "\n"
+        let data = toSend.data(using: .utf8)!
+        input.write(data)
+    }
+
     func stop() {
         process?.terminate()
         process = nil
